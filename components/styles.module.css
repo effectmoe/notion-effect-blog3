@@ -224,28 +224,51 @@
   visibility: hidden;
 }
 
+
 /* ========================================== */
-/* ✅ Instagram専用ホバーエフェクト（分離管理） */
+/* ✅ PageSocial（右側縦並び）のスタイル限定 */
 /* ========================================== */
 
-/* 右側（PageSocial）のInstagramアイコンホバー表示 */
-.pageSocial .instagram:hover {
+/* Instagram（右側） */
+.pageSocial .action.instagram:hover {
   background-color: #e4405f;
   color: white;
   border-radius: 50%;
 }
-
-.pageSocial a.instagram svg {
+.pageSocial .action.instagram svg {
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1.5;
 }
 
-/* 下部（Footer）のInstagramアイコンホバー表示 */
+/* Facebook（右側） */
+.pageSocial .action.facebook:hover {
+  background-color: #3b5998;
+  color: white;
+  border-radius: 50%;
+}
+.pageSocial .action.facebook svg {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+/* ========================================== */
+/* ✅ Footer（下部）のスタイル限定 */
+/* ========================================== */
+
+/* Instagram（下部） */
 .social .instagram:hover {
   color: #e4405f;
 }
-
 .social a.instagram svg {
+  fill: currentColor;
+}
+
+/* Facebook（下部） */
+.social .facebook:hover {
+  color: #3b5998;
+}
+.social a.facebook svg {
   fill: currentColor;
 }
