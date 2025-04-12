@@ -110,12 +110,12 @@
   color: #ff0000;
 }
 
-.instagram {
+.instagram:hover  {
   color: #e4405f;
   /* または inherit */
 }
 
-.facebook {
+.facebook:hover  {
   color: #3b5998;
   /* または inherit */
 }
