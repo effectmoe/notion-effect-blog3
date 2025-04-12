@@ -76,18 +76,6 @@
   transition: color 250ms ease-out;
 }
 
-.social a svg {
-  fill: currentColor;
-  stroke: currentColor;
-  stroke-width: 1.5;
-}
-
-.pageSocial a svg {
-  fill: currentColor;
-  stroke: currentColor;
-  stroke-width: 1.5;
-}
-
 .settings a:last-of-type,
 .social a:last-of-type {
   margin-right: 0;
@@ -120,16 +108,6 @@
 
 .youtube:hover {
   color: #ff0000;
-}
-
-.pageSocial .instagram:hover {
-  background-color: #e4405f;
-  color: white;
-  border-radius: 50%;
-}
-
-.facebook:hover  {
-  color: #3b5998;
 }
 
 .linkedin:hover {
@@ -244,4 +222,30 @@
 
 .hidden {
   visibility: hidden;
+}
+
+/* ========================================== */
+/* ✅ Instagram専用ホバーエフェクト（分離管理） */
+/* ========================================== */
+
+/* 右側（PageSocial）のInstagramアイコンホバー表示 */
+.pageSocial .instagram:hover {
+  background-color: #e4405f;
+  color: white;
+  border-radius: 50%;
+}
+
+.pageSocial a.instagram svg {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+/* 下部（Footer）のInstagramアイコンホバー表示 */
+.social .instagram:hover {
+  color: #e4405f;
+}
+
+.social a.instagram svg {
+  fill: currentColor;
 }
