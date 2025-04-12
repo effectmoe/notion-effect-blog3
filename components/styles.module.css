@@ -78,6 +78,7 @@
 
 .social a svg {
   fill: currentColor;
+  stroke: currentColor;
 }
 
 .settings a:last-of-type,

@@ -11,7 +11,7 @@ export default siteConfig({
   // basic site info (required)
   name: 'カフェキネシ',
   domain: 'nextjs-notion-starter-kit.transitivebullsh.it',
-  author: '星ユカリ',
+  author: '©cafekinesi',
 
   // open graph metadata (optional)
   description: 'Example Next.js Notion Starter Kit Site',
