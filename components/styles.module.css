@@ -230,24 +230,24 @@
 /* ========================================== */
 
 /* Instagram（右側） */
-.instagram:hover {
+.pageSocial .action.instagram:hover {
   background-color: #e4405f;
   color: white;
   border-radius: 50%;
 }
-.instagram svg {
+.pageSocial .action.instagram svg {
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1.5;
 }
 
 /* Facebook（右側） */
-.facebook:hover {
+.pageSocial .action.facebook:hover {
   background-color: #3b5998;
   color: white;
   border-radius: 50%;
 }
-.facebook svg {
+.pageSocial .action.facebook svg {
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1.5;
