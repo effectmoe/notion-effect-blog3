@@ -99,7 +99,7 @@ export function PageSocial() {
           rel='noopener noreferrer'
         >
           <div className={styles.actionBg}>
-            <div className={styles.actionBgPane} />
+            <div className={`${styles.actionBgPane} bgPane`} />
           </div>
 
           <div className={styles.actionBg}>{action.icon}</div>
