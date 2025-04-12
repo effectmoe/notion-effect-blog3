@@ -7,6 +7,8 @@ import { FaYoutube } from '@react-icons/all-files/fa/FaYoutube'
 import { FaZhihu } from '@react-icons/all-files/fa/FaZhihu'
 import { IoMoonSharp } from '@react-icons/all-files/io5/IoMoonSharp'
 import { IoSunnyOutline } from '@react-icons/all-files/io5/IoSunnyOutline'
+import { FaInstagram } from '@react-icons/all-files/fa/FaInstagram'
+import { FaFacebook } from '@react-icons/all-files/fa/FaFacebook'
 import * as React from 'react'
 
 import * as config from '@/lib/config'
@@ -74,6 +76,30 @@ export function FooterImpl() {
             rel='me'
           >
             <FaMastodon />
+          </a>
+        )}
+
+        {config.instagram && (
+          <a
+            className={styles.instagram}
+            href={`https://instagram.com/${config.instagram}`}
+            title={`Instagram @${config.instagram}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <FaInstagram />
+          </a>
+        )}
+
+        {config.facebook && (
+          <a
+            className={styles.facebook}
+            href={`https://facebook.com/${config.facebook}`}
+            title={`Facebook @${config.facebook}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <FaFacebook />
           </a>
         )}
 
