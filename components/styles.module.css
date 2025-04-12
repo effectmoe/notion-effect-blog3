@@ -230,7 +230,7 @@
 /* ========================================== */
 
 /* Instagram（右側） */
-.pageSocial .action.instagram:hover {
+/* .pageSocial .action.instagram:hover {
   background-color: #e4405f;
   color: white;
   border-radius: 50%;
@@ -239,14 +239,10 @@
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1.5;
-}
-/* Instagramホバー時、背景Paneに色を付ける */
-a.instagram:hover .PageSocial_actionBgPane__tSoQL {
-  background-color: #e4405f !important;
-}
+} */
 
 /* Facebook（右側） */
-.pageSocial .action.facebook:hover {
+/* .pageSocial .action.facebook:hover {
   background-color: #3b5998;
   color: white;
   border-radius: 50%;
@@ -255,6 +251,23 @@ a.instagram:hover .PageSocial_actionBgPane__tSoQL {
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1.5;
+} */
+
+
+/* Facebook */
+a.facebook:hover .PageSocial_actionBgPane__tSoQL {
+  background-color: #3b5998;
+}
+a.facebook:hover {
+  color: white;
+}
+
+/* Instagram */
+a.instagram:hover .PageSocial_actionBgPane__tSoQL {
+  background-color: #e4405f;
+}
+a.instagram:hover {
+  color: white;
 }
 
 /* ========================================== */
