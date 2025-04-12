@@ -48,14 +48,14 @@ const socialLinks: SocialLink[] = [
       </svg>
     )
   },
-  
+
   config.instagram && {
     name: 'instagram',
     href: `https://instagram.com/${config.instagram}`,
     title: `Instagram @${config.instagram}`,
     icon: <FaInstagram />
   },
-  
+
   config.facebook && {
     name: 'facebook',
     href: `https://facebook.com/${config.facebook}`,
@@ -91,7 +91,7 @@ export function PageSocial() {
     <div className={styles.pageSocial}>
       {socialLinks.map((action) => (
         <a
-          className={cs(styles.action, styles[action.name])}
+          className={cs(styles.action, styles[action.name], action.name)}
           href={action.href}
           key={action.name}
           title={action.title}
