@@ -110,9 +110,14 @@
   color: #ff0000;
 }
 
-.instagram,
+.instagram {
+  color: #e4405f;
+  /* または inherit */
+}
+
 .facebook {
-  color: inherit;
+  color: #3b5998;
+  /* または inherit */
 }
 
 .linkedin:hover {
