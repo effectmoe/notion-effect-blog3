@@ -48,7 +48,20 @@ const socialLinks: SocialLink[] = [
       </svg>
     )
   },
-
+  
+  config.instagram && {
+    name: 'instagram',
+    href: `https://instagram.com/${config.instagram}`,
+    title: `Instagram @${config.instagram}`,
+    icon: <FaInstagram />
+  },
+  
+  config.facebook && {
+    name: 'facebook',
+    href: `https://facebook.com/${config.facebook}`,
+    title: `Facebook @${config.facebook}`,
+    icon: <FaFacebook />
+  },
 
   config.newsletter && {
     name: 'newsletter',
