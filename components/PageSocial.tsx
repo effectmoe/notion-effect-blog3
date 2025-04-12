@@ -49,33 +49,29 @@ const socialLinks: SocialLink[] = [
     )
   },
 
-  {
-    config.instagram && (
-      <a
-        className={styles.instagram}
-        href={`https://instagram.com/${config.instagram}`}
-        title='Instagram'
-        target='_blank'
-        rel='noopener noreferrer'
-      >
-        <FaInstagram />
-      </a>
-    )
-  },
+  config.instagram && (
+    <a
+      className={styles.instagram}
+      href={`https://instagram.com/${config.instagram}`}
+      title='Instagram'
+      target='_blank'
+      rel='noopener noreferrer'
+    >
+      <FaInstagram />
+    </a>
+  ),
 
-  {
-    config.facebook && (
-      <a
-        className={styles.facebook}
-        href={`https://facebook.com/${config.facebook}`}
-        title='Facebook'
-        target='_blank'
-        rel='noopener noreferrer'
-      >
-        <FaFacebook />
-      </a>
-    )
-  },
+  config.facebook && (
+    <a
+      className={styles.facebook}
+      href={`https://facebook.com/${config.facebook}`}
+      title='Facebook'
+      target='_blank'
+      rel='noopener noreferrer'
+    >
+      <FaFacebook />
+    </a>
+  ),
 
   config.newsletter && {
     name: 'newsletter',
