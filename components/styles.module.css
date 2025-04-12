@@ -76,6 +76,10 @@
   transition: color 250ms ease-out;
 }
 
+.social a svg {
+  fill: currentColor;
+}
+
 .settings a:last-of-type,
 .social a:last-of-type {
   margin-right: 0;
