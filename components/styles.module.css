@@ -79,6 +79,7 @@
 .social a svg {
   fill: currentColor;
   stroke: currentColor;
+  stroke-width: 1.5;
 }
 
 .settings a:last-of-type,
@@ -115,14 +116,15 @@
   color: #ff0000;
 }
 
-.instagram:hover  {
-  color: #e4405f;
-  /* または inherit */
+.instagram:hover {
+  background-color: #e4405f;
+  color: white;
+  border-radius: 50%;
+  padding: 0.3em;
 }
 
 .facebook:hover  {
   color: #3b5998;
-  /* または inherit */
 }
 
 .linkedin:hover {
