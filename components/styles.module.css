@@ -240,6 +240,10 @@
   stroke: currentColor;
   stroke-width: 1.5;
 }
+/* Instagram 背景色ホバー補強 */
+.instagram:hover .PageSocial_actionBgPane__tSoQL {
+  background-color: #e4405f;
+}
 
 /* Facebook（右側） */
 .pageSocial .action.facebook:hover {
