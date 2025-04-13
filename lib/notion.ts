@@ -71,5 +71,10 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
+  // rootNotionPageIdがなければ追加
+  if (!params.ancestorId) {
+    params.ancestorId = process.env.NOTION_PAGE_ID
+  }
+  
   return notion.search(params)
 }
