@@ -144,13 +144,13 @@ export function getFilteredSortedPageIds(
     // ページブロックを抽出
     const pageBlocks = Object.entries(recordMap.block)
       .filter(([_, block]: [string, any]) => 
-        block.value && block.value.type === 'page'
+        (block as any).value && (block as any).value.type === 'page'
       )
     
     // カテゴリでフィルタリング
     const filteredBlocks = selectedCategory
       ? pageBlocks.filter(([_, block]: [string, any]) => {
-          const category = getPageCategory(block, recordMap)
+          const category = getPageCategory((block as any), recordMap)
           return category === selectedCategory
         })
       : pageBlocks
@@ -161,32 +161,32 @@ export function getFilteredSortedPageIds(
     switch (sortOrder) {
       case 'newest':
         sortedBlocks.sort(([_, a]: [string, any], [__, b]: [string, any]) => {
-          const timeA = getPageCreationTime(a)
-          const timeB = getPageCreationTime(b)
+          const timeA = getPageCreationTime((a as any))
+          const timeB = getPageCreationTime((b as any))
           return timeB - timeA // 降順（新しい順）
         })
         break
         
       case 'oldest':
         sortedBlocks.sort(([_, a]: [string, any], [__, b]: [string, any]) => {
-          const timeA = getPageCreationTime(a)
-          const timeB = getPageCreationTime(b)
+          const timeA = getPageCreationTime((a as any))
+          const timeB = getPageCreationTime((b as any))
           return timeA - timeB // 昇順（古い順）
         })
         break
         
       case 'title_asc':
         sortedBlocks.sort(([_, a]: [string, any], [__, b]: [string, any]) => {
-          const titleA = getPageTitle(a, recordMap) || ''
-          const titleB = getPageTitle(b, recordMap) || ''
+          const titleA = getPageTitle((a as any), recordMap) || ''
+          const titleB = getPageTitle((b as any), recordMap) || ''
           return titleA.localeCompare(titleB) // 昇順（A-Z）
         })
         break
         
       case 'title_desc':
         sortedBlocks.sort(([_, a]: [string, any], [__, b]: [string, any]) => {
-          const titleA = getPageTitle(a, recordMap) || ''
-          const titleB = getPageTitle(b, recordMap) || ''
+          const titleA = getPageTitle((a as any), recordMap) || ''
+          const titleB = getPageTitle((b as any), recordMap) || ''
           return titleB.localeCompare(titleA) // 降順（Z-A）
         })
         break
@@ -194,8 +194,8 @@ export function getFilteredSortedPageIds(
       default:
         // デフォルトは新しい順
         sortedBlocks.sort(([_, a]: [string, any], [__, b]: [string, any]) => {
-          const timeA = getPageCreationTime(a)
-          const timeB = getPageCreationTime(b)
+          const timeA = getPageCreationTime((a as any))
+          const timeB = getPageCreationTime((b as any))
           return timeB - timeA // 降順（新しい順）
         })
     }
@@ -205,7 +205,7 @@ export function getFilteredSortedPageIds(
   } catch (err) {
     console.error('Filter/Sort error:', err)
     return Object.keys(recordMap.block).filter(id => {
-      const block = recordMap.block[id]
+      const block = (recordMap.block[id] as any)
       return block.value && block.value.type === 'page'
     })
   }

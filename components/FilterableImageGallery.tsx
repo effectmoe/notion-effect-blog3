@@ -24,25 +24,6 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
     if (!recordMap) return
 
     try {
-      // ページブロックのIDを取得
-      const pageBlocks = Object.entries(recordMap.block || {}).filter(
-        ([_, block]: [string, any]) => block?.value?.type === 'page'
-      )
-      
-      console.log(`Total page blocks found: ${pageBlocks.length}`)
-      
-      if (pageBlocks.length > 0) {
-        // 一部のページブロック情報をデバッグ用に表示
-        const sampleBlock = pageBlocks[0][1]?.value
-        console.log('Sample page block:', {
-          id: sampleBlock?.id,
-          type: sampleBlock?.type,
-          parent_id: sampleBlock?.parent_id,
-          parent_table: sampleBlock?.parent_table,
-          properties: sampleBlock?.properties ? Object.keys(sampleBlock.properties) : 'none'
-        })
-      }
-      
       // 表示するページIDを取得
       const pageIds = getFilteredSortedPageIds(recordMap, selectedCategory, sortOrder)
       setVisiblePageIds(pageIds)
