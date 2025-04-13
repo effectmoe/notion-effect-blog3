@@ -77,15 +77,18 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   }
   
   // 検索フィルタの最適化
+  // 型エラーを回避するために型アサーションを使用
   params.filters = {
-    ...params.filters,
+    ...(params.filters || {}),
     isDeletedOnly: false,
     excludeTemplates: true,
     isNavigableOnly: false,    // falseに変更して検索範囲を広げる
     requireEditPermissions: false,
-    includePublicPagesWithoutExplicitAccess: true,
-    ancestorIds: [process.env.NOTION_PAGE_ID],  // 検索対象を明示的に指定
-  }
+  } as any;  // 型アサーションを使用
+  
+  // 必要なカスタムプロパティを追加
+  (params.filters as any).includePublicPagesWithoutExplicitAccess = true;
+  (params.filters as any).ancestorIds = [process.env.NOTION_PAGE_ID];
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
