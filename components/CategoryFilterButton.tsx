@@ -24,6 +24,7 @@ const CategoryFilterButton: React.FC<CategoryFilterButtonProps> = ({ categories 
       document.querySelectorAll('.notion-collection-card').forEach((card: HTMLElement) => {
         card.style.opacity = '0.4';
         card.style.filter = 'grayscale(50%)';
+        card.style.transition = 'opacity 0.3s ease, filter 0.3s ease';
       });
       
       // 選択したカテゴリに一致するカードだけを表示
@@ -46,7 +47,7 @@ const CategoryFilterButton: React.FC<CategoryFilterButtonProps> = ({ categories 
   }
 
   return (
-    <div className={styles.filterContainer}>
+    <div className={styles.filterContainer} id="category-filter-button">
       <button 
         className={styles.filterButton} 
         onClick={toggleDropdown}
