@@ -18,6 +18,43 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
   
   // 利用可能なカテゴリを抽出
   const categories = extractCategories(recordMap)
+  
+  // デバッグ用にカテゴリ情報を出力
+  useEffect(() => {
+    console.log('Filterable Gallery - Available categories:', categories)
+    console.log('RecordMap structure:', recordMap ? Object.keys(recordMap) : 'null')
+    
+    if (recordMap && recordMap.block) {
+      // ページブロックの数をカウント
+      const pageBlocks = Object.entries(recordMap.block).filter(
+        ([_, block]: [string, any]) => (block as any)?.value?.type === 'page'
+      )
+      console.log(`Page blocks count: ${pageBlocks.length}`)
+      
+      // カテゴリが取得できない場合のデバッグ情報
+      if (categories.length === 0 && recordMap.collection) {
+        const collectionKeys = Object.keys(recordMap.collection)
+        console.log('Collection keys:', collectionKeys)
+        
+        if (collectionKeys.length > 0) {
+          const firstCollection = recordMap.collection[collectionKeys[0]]
+          console.log('First collection:', firstCollection ? 'exists' : 'null')
+          
+          if (firstCollection && firstCollection.value) {
+            console.log('Collection schema keys:', 
+              firstCollection.value.schema ? Object.keys(firstCollection.value.schema) : 'no schema')
+              
+            // スキーマのプロパティを確認
+            if (firstCollection.value.schema) {
+              Object.entries(firstCollection.value.schema).forEach(([key, value]) => {
+                console.log(`Schema property ${key}:`, (value as any).name, (value as any).type)
+              })
+            }
+          }
+        }
+      }
+    }
+  }, [recordMap, categories])
 
   // フィルタとソートの変更に応じて表示するページIDを更新
   useEffect(() => {
@@ -55,12 +92,30 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
   // 全体をラップして、フィルターとソートコントロールを追加するだけ
   return (
     <div className={styles.filterableGalleryContainer}>
-      {categories.length > 0 && (
+      {/* デバッグ用に情報を表示 */}
+      <div style={{ padding: '10px', margin: '10px 0', backgroundColor: '#ffefef', border: '1px solid #ffcfcf', borderRadius: '4px', fontSize: '14px', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' }}>
+        <p><strong>デバッグ情報</strong>:</p>
+        <p>利用可能なカテゴリ数: {categories.length}</p>
+        {categories.length > 0 ? (
+          <ul style={{margin: '5px 0', paddingLeft: '20px'}}>
+            {categories.map(cat => <li key={cat}>{cat}</li>)}
+          </ul>
+        ) : (
+          <p>カテゴリが見つかりませんでした。</p>
+        )}
+        <p>表示可能なページID数: {visiblePageIds.length}</p>
+      </div>
+      
+      {categories.length > 0 ? (
         <FilterSort 
           categories={categories}
           onFilterChange={handleFilterChange}
           onSortChange={handleSortChange}
         />
+      ) : (
+        <div style={{ padding: '15px', margin: '15px 0', backgroundColor: '#f0f0ff', border: '1px solid #d0d0ff', borderRadius: '4px', textAlign: 'center', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' }}>
+          <p>カテゴリが見つかりませんでした。Notionデータベースに「カテゴリ」または「Category」プロパティを追加してください。</p>
+        </div>
       )}
       
       <style jsx global>{`
