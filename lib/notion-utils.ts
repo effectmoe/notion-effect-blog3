@@ -8,7 +8,8 @@ export function extractCategories(recordMap: any): string[] {
 
   try {
     // コレクションからスキーマ情報を取得
-    const collection = Object.values(recordMap.collection)[0]?.value
+    const collectionValues = Object.values(recordMap.collection) as Array<{value: any}>
+    const collection = collectionValues[0]?.value
     if (!collection || !collection.schema) {
       return []
     }
@@ -78,7 +79,8 @@ export function getPageCategory(page: any, recordMap: any): string {
   
   try {
     // コレクションからスキーマ情報を取得
-    const collection = Object.values(recordMap.collection)[0]?.value
+    const collectionValues = Object.values(recordMap.collection) as Array<{value: any}>
+    const collection = collectionValues[0]?.value
     if (!collection || !collection.schema) {
       return ''
     }
