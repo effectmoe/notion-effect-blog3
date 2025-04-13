@@ -25,16 +25,12 @@ export default function NotionDomainPage(props) {
   const [sortOrder, setSortOrder] = useState('newest')
   const [filteredRecordMap, setFilteredRecordMap] = useState(recordMap)
   
-  console.log('Initial recordMap:', recordMap ? Object.keys(recordMap) : 'null')
-  
   // 利用可能なカテゴリを抽出
   const categories = extractCategories(recordMap)
-  console.log('Extracted categories:', categories)
   
   // フィルタとソートの変更を処理
   useEffect(() => {
     if (!recordMap || !recordMap.block) {
-      console.log('No recordMap or block data available')
       setFilteredRecordMap(recordMap)
       return
     }
@@ -44,17 +40,14 @@ export default function NotionDomainPage(props) {
       const pageBlocks = Object.values(recordMap.block).filter(
         (block: any) => block.value && block.value.type === 'page'
       )
-      console.log('Found page blocks:', pageBlocks.length)
       
       // カテゴリでフィルタリング
       const filteredBlocks = selectedCategory
         ? filterPagesByCategory(pageBlocks, selectedCategory, recordMap)
         : pageBlocks
-      console.log('After category filtering:', filteredBlocks.length, 'Selected category:', selectedCategory)
         
       // ソート順でソート
       const sortedBlocks = sortPages(filteredBlocks, sortOrder, recordMap)
-      console.log('After sorting:', sortedBlocks.length, 'Sort order:', sortOrder)
       
       // 新しいレコードマップを作成
       const newRecordMap = { ...recordMap }
@@ -67,7 +60,6 @@ export default function NotionDomainPage(props) {
         }
       })
       
-      console.log('Created new filtered recordMap with blocks:', Object.keys(newRecordMap.block).length)
       setFilteredRecordMap(newRecordMap)
     } catch (err) {
       console.error('Filter/Sort error:', err)
