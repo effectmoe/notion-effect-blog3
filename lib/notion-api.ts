@@ -1,6 +1,8 @@
 import { NotionAPI } from 'notion-client'
 
 export const notion = new NotionAPI({
-  apiBaseUrl: process.env.NOTION_API_BASE_URL || 'https://www.notion.so/api/v3',
-  authToken: process.env.NOTION_API_SECRET  // 認証トークンを追加
+  apiBaseUrl: process.env.NOTION_API_BASE_URL,
+  authToken: process.env.NOTION_TOKEN,
+  activeUser: process.env.NOTION_ACTIVE_USER,
+  userTimeZone: process.env.NOTION_USER_TIMEZONE
 })

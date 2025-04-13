@@ -1,9 +1,6 @@
-import { useState, useEffect } from 'react'
 import { NotionPage } from '@/components/NotionPage'
-import FilterSort from '@/components/FilterSort'
 import { domain } from '@/lib/config'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
-import { extractCategories, filterPagesByCategory, sortPages } from '@/lib/notion-utils'
 
 export const getStaticProps = async () => {
   try {
@@ -20,6 +17,8 @@ export const getStaticProps = async () => {
 }
 
 export default function NotionDomainPage(props) {
+  // フィルタとソート機能を一時的にコメントアウト
+  /*
   const { recordMap } = props
   const [selectedCategory, setSelectedCategory] = useState('')
   const [sortOrder, setSortOrder] = useState('newest')
@@ -90,4 +89,8 @@ export default function NotionDomainPage(props) {
       <NotionPage {...props} recordMap={filteredRecordMap} />
     </>
   )
+  */
+  
+  // 一時的に元の単純な実装に戻す
+  return <NotionPage {...props} />
 }
