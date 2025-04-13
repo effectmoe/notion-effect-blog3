@@ -109,6 +109,6 @@ export async function search(params: SearchParams): Promise<SearchResults> {
     return results;
   } catch (err) {
     console.error('Search error:', err);
-    return { results: [], recordMap: { block: {} } };
+    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults;
   }
 }
