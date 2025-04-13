@@ -49,6 +49,6 @@ async function searchNotionImpl(
     })
     .catch((err) => {
       console.error('Search request failed:', err)
-      return { results: [], recordMap: { block: {} } }
+      return { results: [], total: 0, recordMap: { block: {} } } as types.SearchResults
     })
 }

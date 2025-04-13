@@ -92,7 +92,7 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
-    return { results: [], recordMap: { block: {} } }
+    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults
   }
 
   // 検索クエリの前処理（必要に応じてコメントアウト解除）

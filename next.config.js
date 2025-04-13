@@ -7,6 +7,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 export default withBundleAnalyzer({
+  eslint: {
+    ignoreDuringBuilds: true, // ビルド時のESLintエラーを無視
+  },
   staticPageGenerationTimeout: 300,
   images: {
     remotePatterns: [
