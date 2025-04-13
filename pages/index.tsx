@@ -1,7 +1,13 @@
 import { NotionPage } from '@/components/NotionPage'
-import FilterableImageGallery from '@/components/FilterableImageGallery'
+import dynamic from 'next/dynamic'
 import { domain } from '@/lib/config'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
+
+// クライアントサイドでのみ読み込むためにdynamic importを使用
+const FilterableImageGallery = dynamic(
+  () => import('@/components/FilterableImageGallery'),
+  { ssr: false }
+)
 
 export const getStaticProps = async () => {
   try {
@@ -18,8 +24,6 @@ export const getStaticProps = async () => {
 }
 
 export default function NotionDomainPage(props) {
-  // より安全なアプローチのフィルタとソート機能を実装
-  // NotionPageはそのまま使用し、CSSとグローバルスタイルを使ってフィルタリングを実現
   return (
     <FilterableImageGallery recordMap={props.recordMap}>
       <NotionPage {...props} />

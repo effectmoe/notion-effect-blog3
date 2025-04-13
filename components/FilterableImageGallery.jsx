@@ -1,23 +1,53 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import FilterSort from './FilterSort'
 import { extractCategories, getFilteredSortedPageIds } from '../lib/notion-display-utils'
 import styles from './FilterableImageGallery.module.css'
 
-type FilterableImageGalleryProps = {
-  recordMap: any;
-  children: React.ReactNode;
-}
-
-const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({ 
-  recordMap, 
-  children 
-}) => {
+const FilterableImageGallery = ({ recordMap, children }) => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [sortOrder, setSortOrder] = useState('newest')
-  const [visiblePageIds, setVisiblePageIds] = useState<string[]>([])
+  const [visiblePageIds, setVisiblePageIds] = useState([])
+  const [notionGalleryLoaded, setNotionGalleryLoaded] = useState(false)
+  const filterSortRef = useRef(null)
   
   // 利用可能なカテゴリを抽出
   const categories = extractCategories(recordMap)
+  
+  // NotionのギャラリービューのDOM要素を監視
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    
+    // MutationObserverを使ってNotionギャラリーが読み込まれたかを検出
+    const observer = new MutationObserver((mutations) => {
+      const galleryView = document.querySelector('.notion-gallery-view')
+      if (galleryView && !notionGalleryLoaded) {
+        console.log('Notion gallery view detected')
+        setNotionGalleryLoaded(true)
+        
+        // フィルタとソートをギャラリー内の適切な位置に配置
+        if (filterSortRef.current && categories.length > 0) {
+          try {
+            // フィルタとソートをギャラリーの上部に挿入
+            galleryView.style.position = 'relative'
+            galleryView.style.paddingTop = '50px'
+            galleryView.insertBefore(filterSortRef.current, galleryView.firstChild)
+            
+            console.log('Filter and sort controls positioned')
+          } catch (err) {
+            console.error('Error positioning filter and sort controls:', err)
+          }
+        }
+      }
+    })
+    
+    // bodyを監視開始
+    observer.observe(document.body, { childList: true, subtree: true })
+    
+    return () => {
+      // コンポーネントのアンマウント時に監視を停止
+      observer.disconnect()
+    }
+  }, [categories.length, notionGalleryLoaded])
   
   // フィルタとソートの変更に応じて表示するページIDを更新
   useEffect(() => {
@@ -37,20 +67,20 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
   }, [recordMap, selectedCategory, sortOrder])
   
   // カテゴリの変更を処理
-  const handleFilterChange = (category: string) => {
+  const handleFilterChange = (category) => {
     console.log(`Changing category to: ${category || 'All'}`)
     setSelectedCategory(category)
   }
   
   // ソート順の変更を処理
-  const handleSortChange = (order: string) => {
+  const handleSortChange = (order) => {
     console.log(`Changing sort order to: ${order}`)
     setSortOrder(order)
   }
 
   return (
     <div className={styles.filterableGalleryContainer}>
-      {/* 本番環境では開発用デバッグ情報を表示しない */}
+      {/* 開発環境のみデバッグ情報を表示 */}
       {process.env.NODE_ENV === 'development' && (
         <div className={styles.debugInfo}>
           <p><strong>デバッグ情報</strong>:</p>
@@ -63,28 +93,13 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
             <p>カテゴリが見つかりませんでした。</p>
           )}
           <p>表示可能なページID数: {visiblePageIds.length}</p>
+          <p>NotionギャラリーDOM検出: {notionGalleryLoaded ? 'あり' : 'なし'}</p>
         </div>
       )}
       
-      {/* フィルタとソートの配置用スタイル */}
-      <style jsx global>{`
-        /* Notionのギャラリービューを検出 */
-        .notion-gallery-view {
-          position: relative !important;
-        }
-
-        /* フィルタとソートコントロールをギャラリーの右上に配置 */
-        .${styles.filterSortWrapper} {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          z-index: 10;
-        }
-      `}</style>
-      
-      {/* フィルタとソートのコンテナ */}
+      {/* フィルタとソートのコントロール（DOMに挿入されるまで非表示） */}
       {categories.length > 0 && (
-        <div className={styles.filterSortWrapper}>
+        <div ref={filterSortRef} className={styles.filterSortWrapper} style={{ display: 'none' }}>
           <FilterSort 
             categories={categories}
             onFilterChange={handleFilterChange}
@@ -125,7 +140,7 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
           }
           `
           : 
-          /* 表示すべきIDのリストがない場合はすべて表示 */
+          /* カテゴリ選択がない場合はすべて表示 */
           `
           .notion-collection-card,
           .notion-gallery-view [data-block-id],
@@ -134,6 +149,15 @@ const FilterableImageGallery: React.FC<FilterableImageGalleryProps> = ({
             filter: none;
           }
           `
+        }
+        
+        /* DOMに挿入された後のスタイル */
+        .notion-gallery-view .${styles.filterSortWrapper} {
+          display: block !important;
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 10;
         }
       `}</style>
       

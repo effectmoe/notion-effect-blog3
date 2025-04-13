@@ -1,7 +1,37 @@
 .filterableGalleryContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  position: relative;
+  width: 100%;
 }
 
-/* 必要に応じて追加のスタイルを定義 */
+.filterSortWrapper {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.debugInfo {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #ffefef;
+  border: 1px solid #ffcfcf;
+  border-radius: 4px;
+  font-size: 14px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.debugInfo ul {
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+/* メディアクエリで小さな画面のフィルタとソートの位置を調整 */
+@media only screen and (max-width: 768px) {
+  .filterSortWrapper {
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+    margin: 1rem auto;
+    max-width: 90%;
+  }
+}
