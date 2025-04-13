@@ -76,5 +76,36 @@ export async function search(params: SearchParams): Promise<SearchResults> {
     params.ancestorId = process.env.NOTION_PAGE_ID
   }
   
-  return notion.search(params)
+  // 検索フィルタの最適化
+  params.filters = {
+    ...params.filters,
+    isDeletedOnly: false,
+    excludeTemplates: true,
+    isNavigableOnly: false,    // falseに変更して検索範囲を広げる
+    requireEditPermissions: false,
+    includePublicPagesWithoutExplicitAccess: true,
+    ancestorIds: [process.env.NOTION_PAGE_ID],  // 検索対象を明示的に指定
+  }
+  
+  // クエリがない場合や短すぎる場合は空の結果を返す
+  if (!params.query || params.query.trim().length < 2) {
+    return { results: [], recordMap: { block: {} } }
+  }
+
+  // 検索クエリの前処理（必要に応じてコメントアウト解除）
+  // params.query = params.query.trim();
+  
+  // 検索結果の最大数を指定
+  params.limit = params.limit || 50;  // デフォルトより多くの結果を取得
+  
+  console.log('Search params:', JSON.stringify(params, null, 2));
+  
+  try {
+    const results = await notion.search(params);
+    console.log(`Found ${results.results?.length || 0} results for query: ${params.query}`);
+    return results;
+  } catch (err) {
+    console.error('Search error:', err);
+    return { results: [], recordMap: { block: {} } };
+  }
 }
