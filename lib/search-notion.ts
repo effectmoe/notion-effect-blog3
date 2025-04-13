@@ -20,9 +20,12 @@ async function searchNotionImpl(
     params.ancestorId = api.notionPageId
   }
   
+  // 複数のポイントでエラーの可能性を回避するために型アサーションを使用
+  const searchParams = params as any;
+  
   return fetch(api.searchNotion, {
     method: 'POST',
-    body: JSON.stringify(params),
+    body: JSON.stringify(searchParams),
     headers: {
       'content-type': 'application/json'
     }
