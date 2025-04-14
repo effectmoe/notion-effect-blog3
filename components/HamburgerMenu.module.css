@@ -1,0 +1,130 @@
+.hamburgerMenu {
+  position: relative;
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* デスクトップメニュー */
+.desktopMenu {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+  padding: 0 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox用 */
+}
+
+.desktopMenu::-webkit-scrollbar {
+  display: none; /* Chrome, Safari用 */
+}
+
+.menuItem {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: rgba(55, 53, 47, 0.65);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  display: block;
+}
+
+.menuItem:hover {
+  color: rgb(55, 53, 47);
+}
+
+.menuItem.active {
+  color: rgb(55, 53, 47);
+  border-bottom: 2px solid rgb(55, 53, 47);
+  font-weight: 500;
+}
+
+/* ハンバーガーボタン */
+.hamburgerButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.hamburgerIcon {
+  width: 100%;
+  height: 2px;
+  background-color: rgb(55, 53, 47);
+  transition: all 0.3s ease;
+  position: relative;
+  transform-origin: center;
+}
+
+.hamburgerButton.open .hamburgerIcon:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburgerButton.open .hamburgerIcon:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburgerButton.open .hamburgerIcon:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* モバイルメニュー */
+.mobileMenu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 8px 0;
+  min-width: 180px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.mobileMenu.open {
+  display: block;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.mobileMenu .menuItem {
+  padding: 10px 16px;
+  border-bottom: none;
+  border-left: 2px solid transparent;
+}
+
+.mobileMenu .menuItem.active {
+  border-bottom: none;
+  border-left: 2px solid rgb(55, 53, 47);
+}
+
+/* レスポンシブ設定 */
+@media (max-width: 768px) {
+  .desktopMenu {
+    display: none;
+  }
+  
+  .hamburgerButton {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburgerButton {
+    display: none;
+  }
+}
