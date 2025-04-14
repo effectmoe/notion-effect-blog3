@@ -23,12 +23,33 @@ body {
 
 /* ヘッダーのスペースを確保 */
 .notion-page-container {
-  padding-top: 60px; /* ヘッダーの高さと同じ */
+  padding-top: 50px; /* ヘッダーの高さと同じ */
 }
 
 /* Notionページコンテナ */
 .notionPageContainer {
-  padding-top: 60px; /* ヘッダーの高さと同じ */
+  padding-top: 50px; /* ヘッダーの高さと同じ */
+}
+
+/* ページタイトル（緑枠のロゴ）のスタイル */
+.notion-page-content .notion-page-content-inner .notion-page-icon-hero + .notion-page-title-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: inline-block;
+  transition: opacity 0.2s;
+  background: linear-gradient(45deg, #605dec, #8b63fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  cursor: pointer;
+}
+
+.notion-page-title a {
+  display: inline-block;
+}
+
+.notion-page-title a:hover {
+  opacity: 0.8;
 }
 
 /* ダークモード対応 */
@@ -92,10 +113,10 @@ body {
 /* モバイル調整 */
 @media only screen and (max-width: 768px) {
   .notion-page-container {
-    padding-top: 50px; /* スクロール時のヘッダー高さ */
+    padding-top: 40px; /* スクロール時のヘッダー高さ */
   }
   
   .notionPageContainer {
-    padding-top: 50px; /* スクロール時のヘッダー高さ */
+    padding-top: 40px; /* スクロール時のヘッダー高さ */
   }
 }

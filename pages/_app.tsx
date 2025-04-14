@@ -20,6 +20,7 @@ import posthog from 'posthog-js'
 import * as React from 'react'
 
 import { bootstrap } from '@/lib/bootstrap-client'
+import { addHomeLinkToPageTitle } from '@/lib/add-home-link'
 import {
   fathomConfig,
   fathomId,
@@ -44,6 +45,9 @@ export default function App({ Component, pageProps }: AppProps) {
       if (posthogId) {
         posthog.capture('$pageview')
       }
+
+      // ページが変わるたびにページタイトルにリンクを追加
+      addHomeLinkToPageTitle()
     }
 
     if (fathomId) {
@@ -55,6 +59,9 @@ export default function App({ Component, pageProps }: AppProps) {
     }
 
     router.events.on('routeChangeComplete', onRouteChangeComplete)
+
+    // 初回ロード時にもリンクを追加
+    addHomeLinkToPageTitle()
 
     return () => {
       router.events.off('routeChangeComplete', onRouteChangeComplete)

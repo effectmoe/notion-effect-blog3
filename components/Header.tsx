@@ -112,32 +112,26 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
       )}
     >
       <div className={styles.headerContent}>
-        {/* ロゴ部分とデスクトップメニュー */}
-        <div className={styles.headerLeftSection}>
-          <Link href="/" className={styles.logo} onClick={handleMenuItemClick}>
-            <span className={styles.siteName}>{config.name}</span>
-          </Link>
-          
-          {!isMobile && (
-            <nav className={styles.desktopNav}>
-              <ul className={styles.navList}>
-                {menuItems.map((item) => (
-                  <li key={item.id} className={styles.navItem}>
-                    <Link 
-                      href={item.url} 
-                      className={cs(
-                        styles.navLink,
-                        isActive(item.url) && styles.activeLink
-                      )}
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
-        </div>
+        {/* デスクトップメニュー */}
+        {!isMobile && (
+          <nav className={styles.desktopNav}>
+            <ul className={styles.navList}>
+              {menuItems.map((item) => (
+                <li key={item.id} className={styles.navItem}>
+                  <Link 
+                    href={item.url} 
+                    className={cs(
+                      styles.navLink,
+                      isActive(item.url) && styles.activeLink
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
