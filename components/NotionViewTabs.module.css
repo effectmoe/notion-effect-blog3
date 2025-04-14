@@ -1,6 +1,7 @@
 .tabContainer {
   display: flex;
   margin: 0 auto 16px;
+  margin-top: 70px; /* ヘッダーの高さ */
   border-bottom: 1px solid rgba(55, 53, 47, 0.09);
   overflow-x: auto;
   white-space: nowrap;
@@ -35,9 +36,25 @@
   font-weight: 500;
 }
 
+/* ダークモード対応 */
+:global(.dark-mode) .tab {
+  color: rgba(227, 227, 227, 0.65);
+}
+
+:global(.dark-mode) .tab:hover {
+  color: rgb(227, 227, 227);
+  background-color: rgba(227, 227, 227, 0.08);
+}
+
+:global(.dark-mode) .tab.active {
+  color: rgb(227, 227, 227);
+  border-bottom: 2px solid rgb(227, 227, 227);
+}
+
 @media (max-width: 768px) {
   .tabContainer {
     padding: 0 8px;
+    margin-top: 60px; /* スクロール時のヘッダーの高さ */
   }
   
   .tab {

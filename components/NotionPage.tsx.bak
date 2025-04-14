@@ -29,7 +29,6 @@ import { NotionPageHeader } from './NotionPageHeader'
 import { Page404 } from './Page404'
 import { PageAside } from './PageAside'
 import { PageHead } from './PageHead'
-import { Header } from './Header'
 import styles from './styles.module.css'
 
 // -----------------------------------------------------------------------------
@@ -153,27 +152,6 @@ const propertyTextValue = (
   return defaultFn()
 }
 
-// ナビゲーションメニュー項目
-const getNavigationMenuItems = (site: types.Site) => {
-  // デフォルトのメニュー項目
-  const defaultMenuItems = [
-    { id: 'home', title: 'ホーム', url: '/' }
-  ]
-  
-  // サイト設定に基づくメニュー項目（例：カスタムナビゲーションリンク）
-  if (site.navigationStyle === 'custom' && site.navigationLinks) {
-    const customItems = site.navigationLinks.map((link, index) => ({
-      id: `nav-${index}`,
-      title: link.title,
-      url: link.url || `/page/${link.pageId}`
-    }))
-    
-    return [...defaultMenuItems, ...customItems]
-  }
-  
-  return defaultMenuItems
-}
-
 export function NotionPage({
   site,
   recordMap,
@@ -200,9 +178,6 @@ export function NotionPage({
     }),
     []
   )
-
-  // ナビゲーションメニュー項目を取得
-  const navigationMenuItems = React.useMemo(() => getNavigationMenuItems(site), [site])
 
   // lite mode is for oembed
   const isLiteMode = lite === 'true'
@@ -291,35 +266,30 @@ export function NotionPage({
       {isLiteMode && <BodyClassName className='notion-lite' />}
       {isDarkMode && <BodyClassName className='dark-mode' />}
 
-      {/* グローバルヘッダー */}
-      <Header menuItems={navigationMenuItems} />
-
-      <div className={styles.notionPageContainer}>
-        <NotionRenderer
-          bodyClassName={cs(
-            styles.notion,
-            pageId === site.rootNotionPageId && 'index-page'
-          )}
-          darkMode={isDarkMode}
-          components={components}
-          recordMap={recordMap}
-          rootPageId={site.rootNotionPageId}
-          rootDomain={site.domain}
-          fullPage={!isLiteMode}
-          previewImages={!!recordMap.preview_images}
-          showCollectionViewDropdown={false}
-          showTableOfContents={showTableOfContents}
-          minTableOfContentsItems={minTableOfContentsItems}
-          defaultPageIcon={config.defaultPageIcon}
-          defaultPageCover={config.defaultPageCover}
-          defaultPageCoverPosition={config.defaultPageCoverPosition}
-          mapPageUrl={siteMapPageUrl}
-          mapImageUrl={mapImageUrl}
-          searchNotion={config.isSearchEnabled ? searchNotion : null}
-          pageAside={pageAside}
-          footer={footer}
-        />
-      </div>
+      <NotionRenderer
+        bodyClassName={cs(
+          styles.notion,
+          pageId === site.rootNotionPageId && 'index-page'
+        )}
+        darkMode={isDarkMode}
+        components={components}
+        recordMap={recordMap}
+        rootPageId={site.rootNotionPageId}
+        rootDomain={site.domain}
+        fullPage={!isLiteMode}
+        previewImages={!!recordMap.preview_images}
+        showCollectionViewDropdown={false}
+        showTableOfContents={showTableOfContents}
+        minTableOfContentsItems={minTableOfContentsItems}
+        defaultPageIcon={config.defaultPageIcon}
+        defaultPageCover={config.defaultPageCover}
+        defaultPageCoverPosition={config.defaultPageCoverPosition}
+        mapPageUrl={siteMapPageUrl}
+        mapImageUrl={mapImageUrl}
+        searchNotion={config.isSearchEnabled ? searchNotion : null}
+        pageAside={pageAside}
+        footer={footer}
+      />
 
       <GitHubShareButton />
     </>

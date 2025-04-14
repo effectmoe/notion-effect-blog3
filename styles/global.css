@@ -21,6 +21,34 @@ body {
   overflow-x: hidden;
 }
 
+/* ヘッダーのスペースを確保 */
+.notion-page-container {
+  padding-top: 70px; /* ヘッダーの高さと同じ */
+}
+
+/* Notionページコンテナ */
+.notionPageContainer {
+  padding-top: 70px; /* ヘッダーの高さと同じ */
+}
+
+/* ダークモード対応 */
+.dark-mode {
+  --bg-color: #1f2225;
+  --bg-color-1: #2f3437;
+  --bg-color-2: #373c3f;
+  
+  --fg-color: #fbfbfc;
+  --fg-color-1: #ebeced;
+  --fg-color-2: #d4d4d5;
+  
+  color-scheme: dark;
+}
+
+/* トップページの調整 */
+.index-page {
+  padding-top: 1rem;
+}
+
 .static-tweet blockquote {
   margin: 0;
   margin-block-start: 0;
@@ -59,4 +87,15 @@ body {
 
 ::-webkit-scrollbar-track {           
     background-color: var(--bg-color);
+}
+
+/* モバイル調整 */
+@media only screen and (max-width: 768px) {
+  .notion-page-container {
+    padding-top: 60px; /* スクロール時のヘッダー高さ */
+  }
+  
+  .notionPageContainer {
+    padding-top: 60px; /* スクロール時のヘッダー高さ */
+  }
 }
