@@ -26,7 +26,9 @@
 
 /* Notionページコンテナ - ヘッダー用のスペースを確保 */
 .notionPageContainer {
-  padding-top: 80px; /* ヘッダーの高さ+余白 */
+  padding-top: 60px; /* カスタムヘッダーの高さ分のスペースを確保 */
+  position: relative; /* z-indexの基準にする */
+  z-index: 1000; /* Notionコンテンツの重ね順を設定 */
 }
 
 .loadingIcon {
@@ -277,12 +279,12 @@ a.facebook:hover {
 /* モバイル調整 */
 @media only screen and (max-width: 768px) {
   .notionPageContainer {
-    padding-top: 70px; /* モバイル用のパディング */
+    padding-top: 55px; /* モバイル用のパディング調整 */
   }
 }
 
 @media only screen and (max-width: 480px) {
   .notionPageContainer {
-    padding-top: 65px; /* 小型モバイル用のパディング */
+    padding-top: 50px; /* 小型スマホ用のパディング調整 */
   }
 }

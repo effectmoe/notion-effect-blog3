@@ -7,7 +7,7 @@
   height: 60px; /* ヘッダー高さ増加 */
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(5px);
-  z-index: 1000;
+  z-index: 2000; /* z-indexを上げてNotionのヘッダーより前面に表示 */
   transition: all 0.3s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;

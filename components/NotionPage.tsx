@@ -193,7 +193,8 @@ export function NotionPage({
       Pdf,
       Modal,
       Tweet,
-      Header: NotionPageHeader,
+      // Notionのデフォルトヘッダーをカスタムヘッダーとして使う
+      Header: () => null, // ヘッダーを非表示にする
       propertyLastEditedTimeValue,
       propertyTextValue,
       propertyDateValue
@@ -293,7 +294,7 @@ export function NotionPage({
       {isLiteMode && <BodyClassName className='notion-lite' />}
       {isDarkMode && <BodyClassName className='dark-mode' />}
 
-      {/* グローバルヘッダー */}
+      {/* Notionレンダラー - 内部のヘッダーをnullに設定したので、カスタムヘッダーを外に配置 */}
       <Header menuItems={navigationMenuItems} />
 
       <div className={styles.notionPageContainer}>
