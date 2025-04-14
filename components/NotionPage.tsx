@@ -155,10 +155,8 @@ const propertyTextValue = (
 
 // ナビゲーションメニュー項目
 const getNavigationMenuItems = (site: types.Site) => {
-  // デフォルトのメニュー項目
-  const defaultMenuItems = [
-    { id: 'home', title: 'ホーム', url: '/' }
-  ]
+  // デフォルトのメニュー項目 - ホームは削除
+  const defaultMenuItems = []
   
   // サイト設定に基づくメニュー項目（例：カスタムナビゲーションリンク）
   if (site?.navigationStyle === 'custom' && site?.navigationLinks?.length) {

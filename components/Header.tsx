@@ -12,6 +12,7 @@ import cs from 'classnames'
 import * as config from '@/lib/config'
 import { useDarkMode } from '@/lib/use-dark-mode'
 import styles from './Header.module.css'
+import { notionViews } from '@/lib/notion-views'
 
 // ナビゲーションリンクの型定義
 type MenuItem = {
@@ -20,14 +21,12 @@ type MenuItem = {
   url: string
 }
 
-// デフォルトのメニュー項目
-const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  { id: 'all', title: 'すべて', url: '/' },
-  { id: 'blog', title: 'ブログ', url: '/blog' },
-  { id: 'website', title: 'Webサイト', url: '/website' },
-  { id: 'profile', title: 'プロフィール', url: '/profile' },
-  { id: 'news', title: '新着順', url: '/news' }
-]
+// notionViewsからメニュー項目に変換
+const DEFAULT_MENU_ITEMS: MenuItem[] = notionViews.map(view => ({
+  id: view.id,
+  title: view.name,
+  url: view.path
+}))
 
 type HeaderProps = {
   menuItems?: MenuItem[]
