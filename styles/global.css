@@ -21,6 +21,15 @@ body {
   overflow-x: hidden;
 }
 
+/* Notionタブ非表示 */
+.notion-collection-view-tabs {
+  display: none !important;
+}
+
+.notion-collection-view-tabs-content {
+  display: none !important;
+}
+
 /* ヘッダーのスペースを確保 */
 .notion-page-container {
   padding-top: 40px; /* ヘッダーの高さと同じ */
@@ -28,7 +37,7 @@ body {
 
 /* Notionページコンテナ */
 .notionPageContainer {
-  padding-top: 40px; /* ヘッダーの高さと同じ */
+  padding-top: 60px; /* ヘッダーの高さと同じ */
 }
 
 /* 検索ボックスと周辺の調整 */
@@ -141,10 +150,96 @@ body {
 /* モバイル調整 */
 @media only screen and (max-width: 768px) {
   .notion-page-container {
-    padding-top: 35px; /* スクロール時のヘッダー高さ */
+    padding-top: 55px; /* スクロール時のヘッダー高さ */
   }
   
   .notionPageContainer {
-    padding-top: 35px; /* スクロール時のヘッダー高さ */
+    padding-top: 55px; /* スクロール時のヘッダー高さ */
   }
+}
+
+@media only screen and (max-width: 480px) {
+  .notion-page-container {
+    padding-top: 50px; /* スクロール時のヘッダー高さ */
+  }
+  
+  .notionPageContainer {
+    padding-top: 50px; /* スクロール時のヘッダー高さ */
+  }
+}
+
+/* Notionの元のタブ・コントロールなどを非表示 */
+.notion-table,
+.notion-table-view,
+.notion-collection-view-tabs,
+.notion-collection-view-tabs-content,
+.notion-board-view,
+.notion-gallery-view,
+.notion-list-view,
+.notion-calendar-view,
+.notion-timeline-view {
+  position: relative;
+}
+
+.notion-collection-view-tabs-content-item {
+  display: none !important;
+}
+
+/* Notionのフィルタコントロールを非表示 */
+.notion-collection-header-wrapper,
+.notion-table-view-controls,
+.notion-gallery-view-controls,
+.notion-board-view-controls {
+  display: none !important;
+}
+
+/* NotionビューのセレクタとDBコントロールを非表示 */
+.notion-view-type-selector,
+.notion-collection-view-dropdown {
+  display: none !important;
+}
+
+/* スラッシュメニューを非表示 - モバイル向け */
+.notion-slash-menu,
+.notion-selectable[data-block-id] {
+  display: block !important;
+}
+
+/* すべてのViewを非表示 */
+.notion-default-view-controls-group {
+  display: none !important;
+}
+
+/* リンクコントロールボタンを非表示 */
+.notion-link-control-button {
+  display: none !important;
+}
+
+/* タブの下のブロック全体の高さを調整 - 余分なスペースを削除 */
+.notion-selectable.notion-collection_view_page-block {
+  padding-top: 0 !important;
+}
+
+/* 特別なクラス - Notion Tabsやナビゲーションをすべて削除 */
+.no-notion-tabs .notion-collection-view-tabs,
+.no-notion-tabs .notion-collection-view-tabs-content,
+.no-notion-tabs .notion-board-view-header,
+.no-notion-tabs .notion-gallery-view-header,
+.no-notion-tabs .notion-table-view-header,
+.no-notion-tabs .notion-list-view-header,
+.no-notion-tabs .notion-calendar-view-header,
+.no-notion-tabs .notion-timeline-view-header,
+.no-notion-tabs .notion-collection-view-tabs-content-item {
+  display: none !important;
+}
+
+/* タブを持つセレクタブルなブロックのパディングを削除 */
+.no-notion-tabs .notion-selectable.notion-collection_view_page-block {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* すべてのNotionタブを非表示 */
+.notion-gallery-grid {
+  padding-top: 1rem !important;
 }

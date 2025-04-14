@@ -44,3 +44,43 @@
   position: relative;
   cursor: pointer;
 }
+
+/* Notion内部のナビゲーションを非表示 */
+.notion-collection-view-tabs {
+  display: none !important;
+}
+
+/* Notionのセカンダリナビゲーションを非表示 */
+.notion-collection-view-tabs-content {
+  display: none !important;
+}
+
+/* Notionヘッダー非表示 */
+.notion-header {
+  display: none !important;
+}
+
+/* Notionタブを非表示 */
+.notion-selectable.notion-collection_view_page-block {
+  padding-top: 0 !important;
+}
+
+/* コレクションビューのタブを非表示 */
+.notion-collection-view-tabs-content-item {
+  display: none !important;
+}
+
+/* データベースビューコントロールを非表示 */
+.notion-board-view-controls,
+.notion-gallery-view-controls,
+.notion-table-view-controls,
+.notion-list-view-controls,
+.notion-calendar-view-controls,
+.notion-timeline-view-controls {
+  display: none !important;
+}
+
+/* Notionデフォルトアイコン非表示 */
+.notion-collection-view-controls-group {
+  display: none !important;
+}

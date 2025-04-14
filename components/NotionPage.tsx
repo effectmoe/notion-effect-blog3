@@ -280,6 +280,15 @@ export function NotionPage({
     getPageProperty<string>('Description', block, recordMap) ||
     config.description
 
+  const navHiddenStyle = React.useMemo(() => ({
+    '.notion-collection-view-tabs': {
+      display: 'none !important'
+    },
+    '.notion-collection-view-tabs-content': {
+      display: 'none !important'
+    }
+  }), [])
+
   return (
     <>
       <PageHead
@@ -321,6 +330,8 @@ export function NotionPage({
           searchNotion={config.isSearchEnabled ? searchNotion : null}
           pageAside={pageAside}
           footer={footer}
+          className="no-notion-tabs"
+          customStyleSheet={navHiddenStyle}
         />
       </div>
 
