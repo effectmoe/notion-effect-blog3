@@ -36,7 +36,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
   const { isDarkMode, toggleDarkMode } = useDarkMode()
   const [hasMounted, setHasMounted] = useState(false)
 
@@ -53,24 +52,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
     
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // ウィンドウサイズの変更を監視してモバイル表示を判断
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    // 初期チェック
-    checkIsMobile()
-    
-    // リサイズイベントリスナーを設定
-    window.addEventListener('resize', checkIsMobile)
-    
-    // クリーンアップ
-    return () => {
-      window.removeEventListener('resize', checkIsMobile)
-    }
   }, [])
 
   // ダークモード切り替え
@@ -97,10 +78,8 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
 
   // メニュー項目をクリックした時の処理
   const handleMenuItemClick = () => {
-    // モバイル表示の場合はメニューを閉じる
-    if (isMobile) {
-      setMenuOpen(false)
-    }
+    // メニューを閉じる
+    setMenuOpen(false)
   }
 
   return (
@@ -112,27 +91,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
       )}
     >
       <div className={styles.headerContent}>
-        {/* デスクトップメニュー */}
-        {!isMobile && (
-          <nav className={styles.desktopNav}>
-            <ul className={styles.navList}>
-              {menuItems.map((item) => (
-                <li key={item.id} className={styles.navItem}>
-                  <Link 
-                    href={item.url} 
-                    className={cs(
-                      styles.navLink,
-                      isActive(item.url) && styles.activeLink
-                    )}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
-
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
           {/* ダークモード切り替えボタン */}
@@ -171,50 +129,46 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
             </a>
           )}
 
-          {/* モバイルメニューボタン */}
-          {isMobile && (
-            <button 
-              className={styles.mobileMenuButton} 
-              onClick={toggleMenu}
-              aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-              aria-expanded={menuOpen}
-            >
-              <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </button>
-          )}
+          {/* ハンバーガーメニューボタン（すべての画面サイズで表示） */}
+          <button 
+            className={styles.mobileMenuButton} 
+            onClick={toggleMenu}
+            aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+            aria-expanded={menuOpen}
+          >
+            <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
         </div>
       </div>
 
-      {/* モバイルメニュー（ハンバーガーメニュー） */}
-      {isMobile && (
-        <div className={cs(
-          styles.mobileMenu,
-          menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
-        )}>
-          <nav className={styles.mobileNav}>
-            <ul className={styles.mobileNavList}>
-              {menuItems.map((item) => (
-                <li key={item.id} className={styles.mobileNavItem}>
-                  <Link 
-                    href={item.url} 
-                    className={cs(
-                      styles.mobileNavLink,
-                      isActive(item.url) && styles.activeMobileLink
-                    )}
-                    onClick={handleMenuItemClick}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      )}
+      {/* メニュー（すべての画面サイズで同じ動作） */}
+      <div className={cs(
+        styles.mobileMenu,
+        menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
+      )}>
+        <nav className={styles.mobileNav}>
+          <ul className={styles.mobileNavList}>
+            {menuItems.map((item) => (
+              <li key={item.id} className={styles.mobileNavItem}>
+                <Link 
+                  href={item.url} 
+                  className={cs(
+                    styles.mobileNavLink,
+                    isActive(item.url) && styles.activeMobileLink
+                  )}
+                  onClick={handleMenuItemClick}
+                >
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   )
 }

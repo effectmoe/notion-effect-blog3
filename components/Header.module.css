@@ -31,79 +31,13 @@
   padding: 0 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-/* Desktop Navigation */
-.desktopNav {
-  display: flex;
-  margin-left: 16px;
-}
-
-.navList {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navItem {
-  margin: 0 0.75rem;
-}
-
-.navLink {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0;
-  color: rgba(55, 53, 47, 0.65);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 14px;
-  transition: color 0.2s;
-}
-
-.navLink:hover {
-  color: rgb(55, 53, 47);
-}
-
-.darkHeader .navLink {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.darkHeader .navLink:hover {
-  color: #fff;
-}
-
-.navLink:after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(45deg, #605dec, #8b63fe);
-  transition: width 0.3s;
-}
-
-.navLink:hover:after,
-.activeLink:after {
-  width: 100%;
-}
-
-.activeLink {
-  font-weight: 600;
-  color: rgb(55, 53, 47);
-}
-
-.darkHeader .activeLink {
-  color: #fff;
+  justify-content: flex-end;
 }
 
 /* Header Right Side */
 .headerRight {
   display: flex;
   align-items: center;
-  margin-left: auto;
 }
 
 .iconButton {
@@ -127,16 +61,6 @@
 
 .darkHeader .iconButton:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* GitHub Button */
-.githubButton:hover {
-  color: #333;
-  transform: scale(1.1);
-}
-
-.darkHeader .githubButton:hover {
-  color: #fff;
 }
 
 /* Instagram Button */
@@ -289,25 +213,4 @@
 
 .darkHeader + .mobileMenu .activeMobileLink {
   color: #8b63fe;
-}
-
-/* Responsive Styles */
-@media only screen and (max-width: 768px) {
-  .desktopNav {
-    display: none;
-  }
-
-  .mobileMenuButton {
-    display: flex;
-  }
-
-  .headerContent {
-    padding: 0 1rem;
-  }
-}
-
-@media only screen and (min-width: 769px) {
-  .mobileMenu {
-    display: none;
-  }
 }
