@@ -35,13 +35,46 @@ export function addHomeLinkToPageTitle() {
     }
   };
 
+  // 検索ボックスの位置調整
+  const moveSearchBox = () => {
+    // 検索ボックスと画面タイトル要素を取得
+    const searchBox = document.querySelector('.notion-search');
+    const pageTitle = document.querySelector('.notion-page-title');
+    
+    if (!searchBox || !pageTitle) {
+      // 要素が見つからない場合は少し待ってから再試行
+      setTimeout(moveSearchBox, 100);
+      return;
+    }
+    
+    // すでに移動済みの場合は何もしない
+    if (pageTitle.contains(searchBox)) return;
+    
+    // 検索ボックスをページタイトルの子要素として移動
+    pageTitle.appendChild(searchBox);
+    
+    // 検索ボックスのスタイルを調整
+    const searchInput = searchBox.querySelector('input');
+    if (searchInput) {
+      searchInput.classList.add('notion-search-input');
+      searchInput.placeholder = '検索...';
+    }
+  };
+
   // ページが読み込まれたら実行
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addLink);
+    document.addEventListener('DOMContentLoaded', () => {
+      addLink();
+      moveSearchBox();
+    });
   } else {
     addLink();
+    moveSearchBox();
   }
 
   // 動的に読み込まれる可能性があるので、数秒後にももう一度実行
-  setTimeout(addLink, 1000);
+  setTimeout(() => {
+    addLink();
+    moveSearchBox();
+  }, 1000);
 }

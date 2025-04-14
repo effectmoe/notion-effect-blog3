@@ -23,12 +23,12 @@ body {
 
 /* ヘッダーのスペースを確保 */
 .notion-page-container {
-  padding-top: 50px; /* ヘッダーの高さと同じ */
+  padding-top: 40px; /* ヘッダーの高さと同じ */
 }
 
 /* Notionページコンテナ */
 .notionPageContainer {
-  padding-top: 50px; /* ヘッダーの高さと同じ */
+  padding-top: 40px; /* ヘッダーの高さと同じ */
 }
 
 /* ページタイトル（緑枠のロゴ）のスタイル */
@@ -44,6 +44,15 @@ body {
   cursor: pointer;
 }
 
+.notion-page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
 .notion-page-title a {
   display: inline-block;
 }
@@ -52,7 +61,20 @@ body {
   opacity: 0.8;
 }
 
-/* 検索ボタンの修正 - テキストを非表示にする */
+/* 検索ボックスの移動とスタイル修正 */
+.notion-search {
+  position: relative;
+  margin-left: 16px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.notion-search-button {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
 .notion-search-button span {
   display: none !important;
 }
@@ -80,6 +102,26 @@ body {
 .notion-search button svg {
   width: 18px;
   height: 18px;
+}
+
+/* 検索入力フィールド */
+.notion-search input {
+  width: 180px;
+  height: 36px;
+  background: rgba(55, 53, 47, 0.05);
+  border: 1px solid rgba(55, 53, 47, 0.08);
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 14px;
+  font-family: var(--notion-font);
+  color: rgba(55, 53, 47, 0.85);
+  transition: all 0.2s;
+}
+
+.dark-mode .notion-search input {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* ダークモード対応 */
@@ -148,5 +190,9 @@ body {
   
   .notionPageContainer {
     padding-top: 40px; /* スクロール時のヘッダー高さ */
+  }
+  
+  .notion-search input {
+    width: 120px;
   }
 }

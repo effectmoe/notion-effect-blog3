@@ -1,7 +1,7 @@
 .tabContainer {
   display: flex;
   margin: 0 auto 16px;
-  margin-top: 50px; /* ヘッダーの高さ */
+  margin-top: 40px; /* ヘッダーの高さ */
   border-bottom: 1px solid rgba(55, 53, 47, 0.09);
   overflow-x: auto;
   white-space: nowrap;
@@ -54,7 +54,7 @@
 @media (max-width: 768px) {
   .tabContainer {
     padding: 0 8px;
-    margin-top: 40px; /* スクロール時のヘッダーの高さ */
+    margin-top: 40px; /* ヘッダーの高さ */
   }
   
   .tab {
