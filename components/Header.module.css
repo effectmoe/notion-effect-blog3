@@ -38,6 +38,25 @@
 .headerRight {
   display: flex;
   align-items: center;
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  transform: translateY(-50%);
+  z-index: 1100;
+}
+
+/* 検索ボックスの左に配置された状態用のスタイル */
+.alignedWithSearch {
+  position: static;
+  right: auto;
+  transform: none;
+  margin-right: 5px;
+}
+
+/* 検索コンテナのスタイル */
+.searchContainer {
+  display: flex;
+  align-items: center;
 }
 
 .iconButton {

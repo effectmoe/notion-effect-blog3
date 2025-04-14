@@ -35,29 +35,23 @@ export function addHomeLinkToPageTitle() {
     }
   };
 
-  // 検索ボックスの位置調整
-  const moveSearchBox = () => {
-    // 検索ボックスと画面タイトル要素を取得
-    const searchBox = document.querySelector('.notion-search');
-    const pageTitle = document.querySelector('.notion-page-title');
+  // 検索とヘッダーの調整
+  const adjustSearchAndHeader = () => {
+    // 検索ボックスと見出し要素を取得
+    const searchElement = document.querySelector('.notion-search button');
+    const headerRightElement = document.querySelector('.header-right');
     
-    if (!searchBox || !pageTitle) {
+    if (!searchElement) {
       // 要素が見つからない場合は少し待ってから再試行
-      setTimeout(moveSearchBox, 100);
+      setTimeout(adjustSearchAndHeader, 100);
       return;
     }
     
-    // すでに移動済みの場合は何もしない
-    if (pageTitle.contains(searchBox)) return;
-    
-    // 検索ボックスをページタイトルの子要素として移動
-    pageTitle.appendChild(searchBox);
-    
     // 検索ボックスのスタイルを調整
-    const searchInput = searchBox.querySelector('input');
-    if (searchInput) {
-      searchInput.classList.add('notion-search-input');
-      searchInput.placeholder = '検索...';
+    const searchParent = searchElement.parentElement;
+    if (searchParent) {
+      searchParent.style.position = 'relative';
+      searchParent.style.zIndex = '1050';
     }
   };
 
@@ -65,16 +59,16 @@ export function addHomeLinkToPageTitle() {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       addLink();
-      moveSearchBox();
+      adjustSearchAndHeader();
     });
   } else {
     addLink();
-    moveSearchBox();
+    adjustSearchAndHeader();
   }
 
   // 動的に読み込まれる可能性があるので、数秒後にももう一度実行
   setTimeout(() => {
     addLink();
-    moveSearchBox();
+    adjustSearchAndHeader();
   }, 1000);
 }

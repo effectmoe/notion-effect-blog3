@@ -82,6 +82,52 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
     setMenuOpen(false)
   }
 
+  useEffect(() => {
+    // DOMが完全にロードされた後に実行
+    const moveHeaderElements = () => {
+      // 検索ボックスの要素を取得
+      const searchBox = document.querySelector('.notion-search');
+      
+      if (!searchBox) {
+        // 要素が見つからない場合は少し待ってから再試行
+        setTimeout(moveHeaderElements, 100);
+        return;
+      }
+      
+      // ヘッダー右側要素を取得
+      const headerRight = document.querySelector(`.${styles.headerRight}`);
+      
+      if (!headerRight) return;
+      
+      // 親要素（body）を取得
+      const parentElement = searchBox.parentElement;
+      
+      if (!parentElement) return;
+      
+      // ヘッダー右側要素を検索ボックスの前に移動
+      parentElement.insertBefore(headerRight, searchBox);
+      
+      // クラスを追加して検索ボックスの隣に配置されるようにする
+      headerRight.classList.add(styles.alignedWithSearch);
+      searchBox.classList.add(styles.searchContainer);
+    };
+    
+    // ページが読み込まれたら実行
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', moveHeaderElements);
+    } else {
+      moveHeaderElements();
+    }
+    
+    // 動的に読み込まれる可能性があるので、数秒後にももう一度実行
+    setTimeout(moveHeaderElements, 1000);
+    
+    // クリーンアップ
+    return () => {
+      document.removeEventListener('DOMContentLoaded', moveHeaderElements);
+    };
+  }, [styles.headerRight, styles.alignedWithSearch, styles.searchContainer]);
+
   return (
     <header 
       className={cs(
