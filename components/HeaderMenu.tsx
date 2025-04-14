@@ -15,110 +15,86 @@ type HeaderMenuProps = {
 
 const HeaderMenu: React.FC<HeaderMenuProps> = ({ menuItems }) => {
   const router = useRouter()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  // 現在のパスに基づいてアクティブなメニュー項目を判定
+  // 現在のページに基づいてアクティブなメニュー項目を判断
   const isActive = (url: string) => {
-    return router.asPath === url || 
-           (url !== '/' && router.asPath.startsWith(url))
+    if (url === '/' && router.pathname === '/') {
+      return true
+    }
+    return router.pathname.startsWith(url) && url !== '/'
   }
 
-  // ウィンドウサイズの変更を監視
+  // ウィンドウサイズの変更を監視してモバイル表示を判断
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
     
     // 初期チェック
-    checkIfMobile()
+    checkIsMobile()
     
-    // リサイズイベントのリスナー
-    window.addEventListener('resize', checkIfMobile)
+    // リサイズイベントリスナーを設定
+    window.addEventListener('resize', checkIsMobile)
     
-    // モバイルメニューを開いているときにスクロールを無効化
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    
+    // クリーンアップ
     return () => {
-      window.removeEventListener('resize', checkIfMobile)
-      document.body.style.overflow = ''
+      window.removeEventListener('resize', checkIsMobile)
     }
-  }, [isMobileMenuOpen])
+  }, [])
 
-  // デフォルトの「すべて」タブを追加
-  const allMenuItems = [
-    { id: 'all', title: 'すべて', url: '/' },
-    ...menuItems
-  ]
-
-  // モバイルメニューの切り替え
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
+  // メニューの開閉を切り替える
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
   }
 
-  // ナビゲーションリンクをクリックしたときの処理
-  const handleNavLinkClick = () => {
-    // モバイルメニューが開いている場合は閉じる
-    if (isMobileMenuOpen) {
-      setIsMobileMenuOpen(false)
+  // メニュー項目をクリックした時の処理
+  const handleMenuItemClick = () => {
+    // モバイル表示の場合はメニューを閉じる
+    if (isMobile) {
+      setIsMenuOpen(false)
     }
   }
 
   return (
     <nav className={styles.headerNav}>
-      {/* モバイル表示のハンバーガーボタン */}
+      {/* モバイル用ハンバーガーボタン */}
       {isMobile && (
-        <button
+        <button 
           className={styles.hamburgerButton}
-          onClick={toggleMobileMenu}
+          onClick={toggleMenu}
           aria-label="メニューを開く"
-          aria-expanded={isMobileMenuOpen}
+          aria-expanded={isMenuOpen}
         >
-          <span className={`${styles.hamburgerIcon} ${isMobileMenuOpen ? styles.open : ''}`}>
+          <div className={`${styles.hamburgerIcon} ${isMenuOpen ? styles.open : ''}`}>
             <span></span>
             <span></span>
             <span></span>
-          </span>
+          </div>
         </button>
       )}
 
-      {/* デスクトップ表示のタブメニュー */}
-      {!isMobile && (
-        <div className={styles.desktopMenu}>
-          {allMenuItems.map((item) => (
-            <Link
-              key={item.id}
-              href={item.url}
-              className={`${styles.menuItem} ${isActive(item.url) ? styles.active : ''}`}
-              onClick={handleNavLinkClick}
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* モバイル表示のドロップダウンメニュー */}
-      {isMobile && isMobileMenuOpen && (
-        <div className={styles.mobileMenuOverlay}>
-          <div className={styles.mobileMenu}>
-            {allMenuItems.map((item) => (
-              <Link
-                key={item.id}
+      {/* デスクトップメニューまたはモバイルオープン時のメニュー */}
+      <div className={`
+        ${styles.menuContainer}
+        ${isMobile ? styles.mobileMenu : styles.desktopMenu}
+        ${isMobile && isMenuOpen ? styles.open : ''}
+      `}>
+        <ul className={styles.menuList}>
+          {menuItems.map((item) => (
+            <li key={item.id} className={styles.menuItem}>
+              <Link 
                 href={item.url}
-                className={`${styles.mobileMenuItem} ${isActive(item.url) ? styles.active : ''}`}
-                onClick={handleNavLinkClick}
+                className={`${styles.menuLink} ${isActive(item.url) ? styles.active : ''}`}
+                onClick={handleMenuItemClick}
               >
                 {item.title}
               </Link>
-            ))}
-          </div>
-        </div>
-      )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </nav>
   )
 }
