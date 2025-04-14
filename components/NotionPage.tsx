@@ -202,7 +202,9 @@ export function NotionPage({
   )
 
   // ナビゲーションメニュー項目を取得
-  const navigationMenuItems = React.useMemo(() => getNavigationMenuItems(site), [site])
+  const navigationMenuItems = React.useMemo(() => 
+    getNavigationMenuItems(site), [site]
+  )
 
   // lite mode is for oembed
   const isLiteMode = lite === 'true'

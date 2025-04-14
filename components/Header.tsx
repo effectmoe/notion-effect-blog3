@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaGithub, FaInstagram, FaFacebook } from 'react-icons/fa'
-import { IoMoonSharp, IoSunnyOutline } from 'react-icons/io5'
+import { FaGithub } from '@react-icons/all-files/fa/FaGithub'
+import { FaInstagram } from '@react-icons/all-files/fa/FaInstagram'
+import { FaFacebook } from '@react-icons/all-files/fa/FaFacebook'
+import { IoMoonSharp } from '@react-icons/all-files/io5/IoMoonSharp'
+import { IoSunnyOutline } from '@react-icons/all-files/io5/IoSunnyOutline'
 import cs from 'classnames'
 
 import * as config from '@/lib/config'
