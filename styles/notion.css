@@ -63,6 +63,7 @@
 /* Notionタブを非表示 */
 .notion-selectable.notion-collection_view_page-block {
   padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 /* コレクションビューのタブを非表示 */
@@ -84,3 +85,103 @@
 .notion-collection-view-controls-group {
   display: none !important;
 }
+
+/* Notionのナビゲーションタブの完全な非表示 */
+.notion-collection-view-tabs-container {
+  display: none !important;
+}
+
+/* Notionのコレクションビューの上部余白を削除 */
+.notion-collection-view {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* すべての余分なマージンを削除 */
+.notion-collection-page {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Notion内のすべてのナビゲーション関連要素を非表示 */
+.notion-table-view-header-cell button,
+.notion-board-view-header-button,
+.notion-gallery-view-header-button,
+.notion-list-view-header-button,
+.notion-calendar-view-header-button,
+.notion-timeline-view-header-button {
+  display: none !important;
+}
+
+/* 下部のタブナビゲーションも非表示 */
+.notion-view-type-selector {
+  display: none !important;
+}
+
+/* メインコンテンツエリアのトップパディングを調整 */
+.notion-frame {
+  padding-top: 0 !important;
+}
+
+/* トップに表示される別のナビも隠す */
+.notion-topbar {
+  display: none !important;
+}
+
+/* Notionダブルヘッダー対策 */
+.notion-app-inner {
+  padding-top: 0 !important;
+}
+
+/* コレクションメニューの非表示 */
+.notion-collection-view-select {
+  display: none !important;
+}
+
+/* フィルタボタンの非表示 */
+.notion-search-button {
+  display: none !important;
+}
+
+/* すべてのグローバルメニュー要素の非表示 */
+.notion-breadcrumb, 
+.notion-scroller > .notion-page-view > div:first-child {
+  display: none !important;
+}
+
+/* Notionタブ内の要素がズレる問題の修正 */
+.notion {
+  --notion-max-width: 100% !important;
+  --notion-header-height: 0px !important;
+}
+
+/* すべてのタブとツールバーを非表示にするグローバルスタイル */
+body.no-notion-tabs .notion-collection-view-tabs,
+body.no-notion-tabs .notion-collection-view-tabs-container,
+body.no-notion-tabs .notion-collection-view-tabs-content,
+body.no-notion-tabs .notion-view-type-selector,
+body.no-notion-tabs .notion-topbar,
+body.no-notion-tabs .notion-search-button,
+body.no-notion-tabs .notion-breadcrumb,
+body.no-notion-tabs .notion-header {
+  display: none !important;
+}
+
+/* ページコンテンツ上部のマージンを0に */
+.notion-page-content {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 緊急ハック:強制的に最上部のナビゲーションを隠す */
+.notion-app:before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45px;
+  background-color: transparent;
+  z-index: -1;
+}
+
