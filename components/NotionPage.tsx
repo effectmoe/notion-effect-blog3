@@ -202,6 +202,15 @@ export function NotionPage({
     []
   )
 
+  // ボディにNoNotionTabsクラスを追加
+  React.useEffect(() => {
+    document.body.classList.add('no-notion-tabs');
+    
+    return () => {
+      document.body.classList.remove('no-notion-tabs');
+    };
+  }, []);
+
   // ナビゲーションメニュー項目を取得
   const navigationMenuItems = React.useMemo(() => 
     site ? getNavigationMenuItems(site) : [], [site]
@@ -280,15 +289,6 @@ export function NotionPage({
     getPageProperty<string>('Description', block, recordMap) ||
     config.description
 
-  const navHiddenStyle = React.useMemo(() => ({
-    '.notion-collection-view-tabs': {
-      display: 'none !important'
-    },
-    '.notion-collection-view-tabs-content': {
-      display: 'none !important'
-    }
-  }), [])
-
   return (
     <>
       <PageHead
@@ -302,6 +302,7 @@ export function NotionPage({
 
       {isLiteMode && <BodyClassName className='notion-lite' />}
       {isDarkMode && <BodyClassName className='dark-mode' />}
+      <BodyClassName className='no-notion-tabs' />
 
       {/* Notionレンダラー - 内部のヘッダーをnullに設定したので、カスタムヘッダーを外に配置 */}
       <Header menuItems={navigationMenuItems} />
@@ -310,6 +311,7 @@ export function NotionPage({
         <NotionRenderer
           bodyClassName={cs(
             styles.notion,
+            'no-notion-tabs',
             pageId === site.rootNotionPageId && 'index-page'
           )}
           darkMode={isDarkMode}
@@ -331,7 +333,6 @@ export function NotionPage({
           pageAside={pageAside}
           footer={footer}
           className="no-notion-tabs"
-          customStyleSheet={navHiddenStyle}
         />
       </div>
 

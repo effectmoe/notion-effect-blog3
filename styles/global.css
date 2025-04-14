@@ -220,7 +220,23 @@ body {
   padding-top: 0 !important;
 }
 
-/* 特別なクラス - Notion Tabsやナビゲーションをすべて削除 */
+/* 強制的に特定のNotionコンポーネントを非表示にする */
+:root .notion-collection-view-tabs,
+:root .notion-collection-view-tabs-content,
+:root .notion-board-view-header,
+:root .notion-gallery-view-header,
+:root .notion-table-view-header,
+:root .notion-list-view-header,
+:root .notion-calendar-view-header,
+:root .notion-timeline-view-header,
+body .notion-collection-view-tabs,
+body .notion-collection-view-tabs-content,
+body .notion-board-view-header,
+body .notion-gallery-view-header,
+body .notion-table-view-header,
+body .notion-list-view-header,
+body .notion-calendar-view-header,
+body .notion-timeline-view-header,
 .no-notion-tabs .notion-collection-view-tabs,
 .no-notion-tabs .notion-collection-view-tabs-content,
 .no-notion-tabs .notion-board-view-header,
@@ -229,17 +245,43 @@ body {
 .no-notion-tabs .notion-list-view-header,
 .no-notion-tabs .notion-calendar-view-header,
 .no-notion-tabs .notion-timeline-view-header,
-.no-notion-tabs .notion-collection-view-tabs-content-item {
+.notion-collection-view-tabs-content-item,
+.notion-collection-view-tabs-content-item {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
 }
 
 /* タブを持つセレクタブルなブロックのパディングを削除 */
-.no-notion-tabs .notion-selectable.notion-collection_view_page-block {
+.notion-selectable.notion-collection_view_page-block {
   padding-top: 0 !important;
   margin-top: 0 !important;
 }
 
-/* すべてのNotionタブを非表示 */
-.notion-gallery-grid {
-  padding-top: 1rem !important;
+/* 最終的にNotionのデュプリケートされた要素を非表示にする */
+.notion-viewport > div > div:first-child {
+  display: none !important;
+}
+
+/* Notionのトップバーを完全に非表示 */
+.notion-topbar {
+  display: none !important;
+}
+
+/* すべてのNotionタブを非表示にするための特別なルール */
+body.no-notion-tabs {
+  --notion-header-height: 0px !important;
+}
+
+/* Notionタブの完全無効化 */
+.notion-collection-view-tabs-container {
+  display: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
