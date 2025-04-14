@@ -161,7 +161,7 @@ const getNavigationMenuItems = (site: types.Site) => {
   ]
   
   // サイト設定に基づくメニュー項目（例：カスタムナビゲーションリンク）
-  if (site.navigationStyle === 'custom' && site.navigationLinks) {
+  if (site?.navigationStyle === 'custom' && site?.navigationLinks?.length) {
     const customItems = site.navigationLinks.map((link, index) => ({
       id: `nav-${index}`,
       title: link.title,
@@ -203,7 +203,7 @@ export function NotionPage({
 
   // ナビゲーションメニュー項目を取得
   const navigationMenuItems = React.useMemo(() => 
-    getNavigationMenuItems(site), [site]
+    site ? getNavigationMenuItems(site) : [], [site]
   )
 
   // lite mode is for oembed

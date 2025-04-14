@@ -6,6 +6,12 @@ export * from 'notion-types'
 
 export type NavigationStyle = 'default' | 'custom'
 
+export interface NavigationLink {
+  title: string
+  pageId?: string
+  url?: string
+}
+
 export interface PageError {
   message?: string
   statusCode: number
@@ -38,6 +44,10 @@ export interface Site {
   fontFamily?: string
   darkMode?: boolean
   previewImages?: boolean
+
+  // navigation
+  navigationStyle?: NavigationStyle
+  navigationLinks?: Array<NavigationLink>
 
   // opengraph metadata
   description?: string
