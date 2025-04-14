@@ -4,18 +4,18 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 40px;
+  height: 60px; /* ヘッダー高さ増加 */
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(5px);
   z-index: 1000;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   border-bottom: 1px solid rgba(55, 53, 47, 0.09);
 }
 
 .headerScrolled {
-  height: 35px;
+  height: 50px; /* スクロール時のヘッダー高さ */
 }
 
 .darkHeader {
@@ -28,44 +28,119 @@
   max-width: 1200px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between; /* 左・中央・右で均等配置 */
+}
+
+/* ヘッダー左側（ロゴ） */
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.logo:hover {
+  opacity: 0.85;
+}
+
+.logoText {
+  font-size: 1.3rem;
+  background: linear-gradient(45deg, #605dec, #8b63fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* デスクトップナビゲーション */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.navItem {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 1rem;
+  color: rgba(55, 53, 47, 0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: rgba(55, 53, 47, 1);
+}
+
+.activeLink {
+  color: #605dec;
+  font-weight: 600;
+  position: relative;
+}
+
+.activeLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(45deg, #605dec, #8b63fe);
+  border-radius: 3px 3px 0 0;
+}
+
+.darkHeader .navLink {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.darkHeader .navLink:hover,
+.darkHeader .activeLink {
+  color: #fff;
 }
 
 /* Header Right Side */
 .headerRight {
   display: flex;
   align-items: center;
-  position: absolute;
-  top: 50%;
-  right: 40px;
-  transform: translateY(-50%);
   z-index: 1100;
-}
-
-/* 検索ボックスの左に配置された状態用のスタイル */
-.alignedWithSearch {
-  position: static;
-  right: auto;
-  transform: none;
-  margin-right: 5px;
-}
-
-/* 検索コンテナのスタイル */
-.searchContainer {
-  display: flex;
-  align-items: center;
 }
 
 .iconButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  margin-left: 0.3rem;
+  width: 36px;
+  height: 36px;
+  margin-left: 0.4rem;
   background: none;
   border: none;
   border-radius: 50%;
@@ -76,6 +151,7 @@
 
 .iconButton:hover {
   background-color: rgba(0, 0, 0, 0.04);
+  transform: scale(1.05);
 }
 
 .darkHeader .iconButton:hover {
@@ -96,14 +172,83 @@
   transform: scale(1.1);
 }
 
+/* 検索オーバーレイ */
+.searchOverlay {
+  position: fixed;
+  top: 60px; /* ヘッダーの高さに合わせる */
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  z-index: 998;
+  transition: all 0.3s ease;
+}
+
+.darkHeader + .searchOverlay {
+  background-color: rgba(47, 52, 55, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.headerScrolled + .searchOverlay {
+  top: 50px; /* スクロール時のヘッダー高さに合わせる */
+}
+
+.searchVisible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.searchHidden {
+  transform: translateY(-10px);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.searchContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid rgba(55, 53, 47, 0.16);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #605dec;
+  box-shadow: 0 0 0 2px rgba(96, 93, 236, 0.2);
+}
+
+.darkHeader + .searchOverlay .searchInput {
+  background-color: rgba(66, 71, 74, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.darkHeader + .searchOverlay .searchInput:focus {
+  border-color: #8b63fe;
+  box-shadow: 0 0 0 2px rgba(139, 99, 254, 0.3);
+}
+
 /* Mobile Menu Button */
 .mobileMenuButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  margin-left: 0.3rem;
+  width: 36px;
+  height: 36px;
+  margin-left: 0.5rem;
   background: none;
   border: none;
   color: inherit;
@@ -113,8 +258,8 @@
 
 /* Hamburger Icon */
 .hamburgerIcon {
-  width: 18px;
-  height: 14px;
+  width: 20px;
+  height: 16px;
   position: relative;
   transform: rotate(0deg);
   transition: 0.4s ease-in-out;
@@ -138,15 +283,15 @@
 }
 
 .hamburgerIcon span:nth-child(2) {
-  top: 6px;
+  top: 7px;
 }
 
 .hamburgerIcon span:nth-child(3) {
-  top: 12px;
+  top: 14px;
 }
 
 .hamburgerIcon.open span:nth-child(1) {
-  top: 6px;
+  top: 7px;
   transform: rotate(135deg);
 }
 
@@ -156,17 +301,17 @@
 }
 
 .hamburgerIcon.open span:nth-child(3) {
-  top: 6px;
+  top: 7px;
   transform: rotate(-135deg);
 }
 
 /* Mobile Menu */
 .mobileMenu {
   position: fixed;
-  top: 40px;
+  top: 60px; /* ヘッダーの高さに合わせる */
   left: 0;
   width: 100%;
-  height: calc(100vh - 40px);
+  height: calc(100vh - 60px);
   background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   z-index: 999;
@@ -179,8 +324,8 @@
 }
 
 .headerScrolled + .mobileMenu {
-  top: 35px;
-  height: calc(100vh - 35px);
+  top: 50px; /* スクロール時のヘッダー高さに合わせる */
+  height: calc(100vh - 50px);
 }
 
 .mobileMenuOpen {
@@ -192,23 +337,28 @@
 }
 
 .mobileNav {
-  padding: 1.2rem;
+  padding: 1.5rem;
 }
 
 .mobileNavList {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .mobileNavItem {
   margin: 0.8rem 0;
+  width: 100%;
+  max-width: 280px;
   text-align: center;
 }
 
 .mobileNavLink {
   display: block;
-  padding: 0.6rem;
+  padding: 0.8rem;
   color: inherit;
   text-decoration: none;
   font-size: 1.1rem;
@@ -228,8 +378,93 @@
 .activeMobileLink {
   font-weight: 700;
   color: #605dec;
+  background-color: rgba(96, 93, 236, 0.08);
 }
 
 .darkHeader + .mobileMenu .activeMobileLink {
   color: #8b63fe;
+  background-color: rgba(139, 99, 254, 0.1);
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 992px) {
+  .navLink {
+    padding: 0 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: 55px;
+  }
+  
+  .headerScrolled {
+    height: 45px;
+  }
+  
+  .headerContent {
+    padding: 0 1rem;
+  }
+  
+  .searchOverlay {
+    top: 55px;
+  }
+  
+  .headerScrolled + .searchOverlay {
+    top: 45px;
+  }
+  
+  .mobileMenu {
+    top: 55px;
+    height: calc(100vh - 55px);
+  }
+  
+  .headerScrolled + .mobileMenu {
+    top: 45px;
+    height: calc(100vh - 45px);
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    height: 50px;
+  }
+  
+  .headerScrolled {
+    height: 40px;
+  }
+  
+  .logoText {
+    font-size: 1.2rem;
+  }
+  
+  .iconButton {
+    width: 32px;
+    height: 32px;
+    margin-left: 0.3rem;
+  }
+  
+  .mobileMenuButton {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .searchOverlay {
+    top: 50px;
+  }
+  
+  .headerScrolled + .searchOverlay {
+    top: 40px;
+  }
+  
+  .mobileMenu {
+    top: 50px;
+    height: calc(100vh - 50px);
+  }
+  
+  .headerScrolled + .mobileMenu {
+    top: 40px;
+    height: calc(100vh - 40px);
+  }
 }

@@ -26,7 +26,7 @@
 
 /* Notionページコンテナ - ヘッダー用のスペースを確保 */
 .notionPageContainer {
-  padding-top: 70px; /* ヘッダーの高さと同じ */
+  padding-top: 80px; /* ヘッダーの高さ+余白 */
 }
 
 .loadingIcon {
@@ -277,6 +277,12 @@ a.facebook:hover {
 /* モバイル調整 */
 @media only screen and (max-width: 768px) {
   .notionPageContainer {
-    padding-top: 60px; /* スクロール時のヘッダー高さ */
+    padding-top: 70px; /* モバイル用のパディング */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .notionPageContainer {
+    padding-top: 65px; /* 小型モバイル用のパディング */
   }
 }

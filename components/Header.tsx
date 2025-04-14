@@ -6,6 +6,7 @@ import { FaInstagram } from '@react-icons/all-files/fa/FaInstagram'
 import { FaFacebook } from '@react-icons/all-files/fa/FaFacebook'
 import { IoMoonSharp } from '@react-icons/all-files/io5/IoMoonSharp'
 import { IoSunnyOutline } from '@react-icons/all-files/io5/IoSunnyOutline'
+import { IoSearchOutline } from '@react-icons/all-files/io5/IoSearchOutline'
 import cs from 'classnames'
 
 import * as config from '@/lib/config'
@@ -38,10 +39,24 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const { isDarkMode, toggleDarkMode } = useDarkMode()
   const [hasMounted, setHasMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isSearchVisible, setIsSearchVisible] = useState(false)
 
   // マウント状態の確認
   useEffect(() => {
     setHasMounted(true)
+    
+    // 画面サイズのチェック
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    // 初期チェック
+    checkIsMobile()
+    
+    // リサイズイベントリスナーを設定
+    window.addEventListener('resize', checkIsMobile)
+    return () => window.removeEventListener('resize', checkIsMobile)
   }, [])
 
   // スクロール検出用のイベントリスナー
@@ -74,6 +89,19 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   // メニューの開閉を切り替える
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
+    // メニューを開くときは検索を閉じる
+    if (!menuOpen) {
+      setIsSearchVisible(false)
+    }
+  }
+
+  // 検索の表示/非表示を切り替える
+  const toggleSearch = () => {
+    setIsSearchVisible(!isSearchVisible)
+    // 検索を開くときはメニューを閉じる
+    if (!isSearchVisible) {
+      setMenuOpen(false)
+    }
   }
 
   // メニュー項目をクリックした時の処理
@@ -82,51 +110,12 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
     setMenuOpen(false)
   }
 
-  useEffect(() => {
-    // DOMが完全にロードされた後に実行
-    const moveHeaderElements = () => {
-      // 検索ボックスの要素を取得
-      const searchBox = document.querySelector('.notion-search');
-      
-      if (!searchBox) {
-        // 要素が見つからない場合は少し待ってから再試行
-        setTimeout(moveHeaderElements, 100);
-        return;
-      }
-      
-      // ヘッダー右側要素を取得
-      const headerRight = document.querySelector(`.${styles.headerRight}`);
-      
-      if (!headerRight) return;
-      
-      // 親要素（body）を取得
-      const parentElement = searchBox.parentElement;
-      
-      if (!parentElement) return;
-      
-      // ヘッダー右側要素を検索ボックスの前に移動
-      parentElement.insertBefore(headerRight, searchBox);
-      
-      // クラスを追加して検索ボックスの隣に配置されるようにする
-      headerRight.classList.add(styles.alignedWithSearch);
-      searchBox.classList.add(styles.searchContainer);
-    };
-    
-    // ページが読み込まれたら実行
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', moveHeaderElements);
-    } else {
-      moveHeaderElements();
-    }
-    
-    // 動的に読み込まれる可能性があるので、数秒後にももう一度実行
-    setTimeout(moveHeaderElements, 1000);
-    
-    // クリーンアップ
-    return () => {
-      document.removeEventListener('DOMContentLoaded', moveHeaderElements);
-    };
-  }, [styles.headerRight, styles.alignedWithSearch, styles.searchContainer]);
+  // ロゴコンポーネント
+  const Logo = () => (
+    <Link href="/" className={styles.logo}>
+      <span className={styles.logoText}>CafeKinesi</span>
+    </Link>
+  )
 
   return (
     <header 
@@ -137,8 +126,43 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
       )}
     >
       <div className={styles.headerContent}>
+        {/* ロゴ */}
+        <div className={styles.headerLeft}>
+          <Logo />
+        </div>
+
+        {/* デスクトップ用ナビゲーション（PC表示のみ） */}
+        {!isMobile && (
+          <nav className={styles.desktopNav}>
+            <ul className={styles.navList}>
+              {menuItems.map((item) => (
+                <li key={item.id} className={styles.navItem}>
+                  <Link 
+                    href={item.url} 
+                    className={cs(
+                      styles.navLink,
+                      isActive(item.url) && styles.activeLink
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
+          {/* 検索ボタン */}
+          <button 
+            className={styles.iconButton} 
+            onClick={toggleSearch}
+            aria-label={isSearchVisible ? '検索を閉じる' : '検索を開く'}
+          >
+            <IoSearchOutline size={22} />
+          </button>
+
           {/* ダークモード切り替えボタン */}
           {hasMounted && (
             <button 
@@ -175,46 +199,65 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
             </a>
           )}
 
-          {/* ハンバーガーメニューボタン（すべての画面サイズで表示） */}
-          <button 
-            className={styles.mobileMenuButton} 
-            onClick={toggleMenu}
-            aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-            aria-expanded={menuOpen}
-          >
-            <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
+          {/* ハンバーガーメニューボタン（モバイル表示のみ） */}
+          {isMobile && (
+            <button 
+              className={styles.mobileMenuButton} 
+              onClick={toggleMenu}
+              aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+              aria-expanded={menuOpen}
+            >
+              <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* メニュー（すべての画面サイズで同じ動作） */}
+      {/* 検索オーバーレイ */}
       <div className={cs(
-        styles.mobileMenu,
-        menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
+        styles.searchOverlay,
+        isSearchVisible ? styles.searchVisible : styles.searchHidden
       )}>
-        <nav className={styles.mobileNav}>
-          <ul className={styles.mobileNavList}>
-            {menuItems.map((item) => (
-              <li key={item.id} className={styles.mobileNavItem}>
-                <Link 
-                  href={item.url} 
-                  className={cs(
-                    styles.mobileNavLink,
-                    isActive(item.url) && styles.activeMobileLink
-                  )}
-                  onClick={handleMenuItemClick}
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className={styles.searchContainer}>
+          <input 
+            type="text" 
+            className={styles.searchInput} 
+            placeholder="検索..."
+            aria-label="検索"
+          />
+        </div>
       </div>
+
+      {/* モバイルメニュー（モバイル表示のみ） */}
+      {isMobile && (
+        <div className={cs(
+          styles.mobileMenu,
+          menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
+        )}>
+          <nav className={styles.mobileNav}>
+            <ul className={styles.mobileNavList}>
+              {menuItems.map((item) => (
+                <li key={item.id} className={styles.mobileNavItem}>
+                  <Link 
+                    href={item.url} 
+                    className={cs(
+                      styles.mobileNavLink,
+                      isActive(item.url) && styles.activeMobileLink
+                    )}
+                    onClick={handleMenuItemClick}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
