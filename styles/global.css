@@ -32,7 +32,7 @@ body {
 
 /* ヘッダーのスペースを確保 */
 .notion-page-container {
-  padding-top: 40px; /* ヘッダーの高さと同じ */
+  padding-top: 60px; /* ヘッダーの高さと同じ */
 }
 
 /* Notionページコンテナ */

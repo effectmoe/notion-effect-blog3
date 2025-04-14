@@ -23,7 +23,7 @@ export const getStaticProps = async () => {
 export default function NotionDomainPage(props) {
   return (
     <>
-      <NotionViewTabs tabs={notionViews} />
+      {/* NotionViewTabsは削除 - ヘッダーメニューと重複するため */}
       <NotionPage {...props} />
     </>
   )
