@@ -23,12 +23,12 @@ body {
 
 /* ヘッダーのスペースを確保 */
 .notion-page-container {
-  padding-top: 70px; /* ヘッダーの高さと同じ */
+  padding-top: 60px; /* ヘッダーの高さと同じ */
 }
 
 /* Notionページコンテナ */
 .notionPageContainer {
-  padding-top: 70px; /* ヘッダーの高さと同じ */
+  padding-top: 60px; /* ヘッダーの高さと同じ */
 }
 
 /* ダークモード対応 */
@@ -92,10 +92,10 @@ body {
 /* モバイル調整 */
 @media only screen and (max-width: 768px) {
   .notion-page-container {
-    padding-top: 60px; /* スクロール時のヘッダー高さ */
+    padding-top: 50px; /* スクロール時のヘッダー高さ */
   }
   
   .notionPageContainer {
-    padding-top: 60px; /* スクロール時のヘッダー高さ */
+    padding-top: 50px; /* スクロール時のヘッダー高さ */
   }
 }

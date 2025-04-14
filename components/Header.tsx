@@ -21,11 +21,11 @@ type MenuItem = {
 
 // デフォルトのメニュー項目
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  { id: 'home', title: 'ホーム', url: '/' },
+  { id: 'all', title: 'すべて', url: '/' },
   { id: 'blog', title: 'ブログ', url: '/blog' },
-  { id: 'categories', title: 'カテゴリー', url: '/categories' },
-  { id: 'tags', title: 'タグ', url: '/tags' },
-  { id: 'about', title: '私について', url: '/about' }
+  { id: 'website', title: 'Webサイト', url: '/website' },
+  { id: 'profile', title: 'プロフィール', url: '/profile' },
+  { id: 'news', title: '新着順', url: '/news' }
 ]
 
 type HeaderProps = {
@@ -112,33 +112,32 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
       )}
     >
       <div className={styles.headerContent}>
-        {/* ロゴ部分 */}
-        <div className={styles.logoContainer}>
+        {/* ロゴ部分とデスクトップメニュー */}
+        <div className={styles.headerLeftSection}>
           <Link href="/" className={styles.logo} onClick={handleMenuItemClick}>
             <span className={styles.siteName}>{config.name}</span>
           </Link>
+          
+          {!isMobile && (
+            <nav className={styles.desktopNav}>
+              <ul className={styles.navList}>
+                {menuItems.map((item) => (
+                  <li key={item.id} className={styles.navItem}>
+                    <Link 
+                      href={item.url} 
+                      className={cs(
+                        styles.navLink,
+                        isActive(item.url) && styles.activeLink
+                      )}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
-
-        {/* デスクトップメニュー */}
-        {!isMobile && (
-          <nav className={styles.desktopNav}>
-            <ul className={styles.navList}>
-              {menuItems.map((item) => (
-                <li key={item.id} className={styles.navItem}>
-                  <Link 
-                    href={item.url} 
-                    className={cs(
-                      styles.navLink,
-                      isActive(item.url) && styles.activeLink
-                    )}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
@@ -154,18 +153,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           )}
 
           {/* SNSリンク */}
-          {config.github && (
-            <a
-              href={`https://github.com/${config.github}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cs(styles.iconButton, styles.githubButton)}
-              aria-label="GitHubを見る"
-            >
-              <FaGithub size={20} />
-            </a>
-          )}
-
           {config.instagram && (
             <a
               href={`https://instagram.com/${config.instagram}`}
