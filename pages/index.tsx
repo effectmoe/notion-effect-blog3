@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react'
 import { NotionPage } from '@/components/NotionPage'
 import NotionViewTabs from '@/components/NotionViewTabs'
 import { domain } from '@/lib/config'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
 import { notionViews } from '@/lib/notion-views'
+import { getMenuItemsFromNotion } from '@/lib/get-menu-items'
 
 export const getStaticProps = async () => {
   try {
