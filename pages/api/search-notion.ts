@@ -204,6 +204,8 @@ export default async function searchNotionHandler(
       };
     } else {
       // 非公式APIを使用した検索（既存の実装）
+      // リクエストのパラメータをそのまま渡す
+      // search関数内部でrootNotionPageIdが設定される
       results = await search(searchParams as types.SearchParams);
     }
     

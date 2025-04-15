@@ -94,12 +94,20 @@ export const NotionSearch: React.FC = () => {
     setError('');
     
     try {
+      // 検索リクエストのパラメータをログに出力
+      console.log('Search request params:', { 
+        query: searchQuery,
+        ancestorId: config.api.notionPageId,
+        useOfficialApi
+      });
+      
       const results = await searchNotion({
         query: searchQuery,
         ancestorId: config.api.notionPageId, // NotionページIDを設定
         useOfficialApi
       });
       
+      console.log('Search results:', results?.results?.length || 0);
       setSearchResults(results?.results || []);
     } catch (err) {
       console.error('Error performing search:', err);

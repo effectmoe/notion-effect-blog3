@@ -10,7 +10,8 @@ import pMemoize from 'p-memoize'
 import {
   isPreviewImageSupportEnabled,
   navigationLinks,
-  navigationStyle
+  navigationStyle,
+  rootNotionPageId
 } from './config'
 import { getTweetsMap } from './get-tweets'
 import { notion } from './notion-api'
@@ -72,13 +73,16 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 
 export async function search(params: SearchParams): Promise<SearchResults> {
   // パラメータをログに出力
-  console.log('Search function params:', JSON.stringify(params, null, 2));
+  console.log('Search function params (original):', JSON.stringify(params, null, 2));
   
-  // 必要なカスタムプロパティを追加
+  // ancestorIdを強制的にrootNotionPageIdに設定
+  params.ancestorId = rootNotionPageId;
+  
+  // 基本的なフィルタを設定
   params.filters = {
     isDeletedOnly: false,
     excludeTemplates: true,
-    isNavigableOnly: true,    // trueに戻す
+    isNavigableOnly: true,
     requireEditPermissions: false,
   };
   
@@ -86,16 +90,14 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   if (!params.query || params.query.trim().length < 2) {
     return { results: [], total: 0, recordMap: { block: {} } } as SearchResults
   }
-  (params.filters as any).includePublicPagesWithoutExplicitAccess = true;
-  // configからインポートしたIDを使用
-  (params.filters as any).ancestorIds = [params.ancestorId];
   
-  // 検索結果の最大数を指定
-  params.limit = params.limit || 50;  // デフォルトより多くの結果を取得
+  // 検索結果の最大数を設定
+  params.limit = params.limit || 20;
   
-  console.log('Search params:', JSON.stringify(params, null, 2));
+  console.log('Search params (final):', JSON.stringify(params, null, 2));
   
   try {
+    // 検索実行
     const results = await notion.search(params);
     console.log(`Found ${results.results?.length || 0} results for query: ${params.query}`);
     return results;
