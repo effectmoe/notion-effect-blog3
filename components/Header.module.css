@@ -60,10 +60,9 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* デスクトップナビゲーション */
+/* デスクトップナビゲーション - 現在は空の置き場所として使用 */
 .desktopNav {
-  display: flex;
-  align-items: center;
+  flex: 1;
   height: 100%;
   margin: 0 auto;
 }
