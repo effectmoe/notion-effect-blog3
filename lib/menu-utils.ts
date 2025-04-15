@@ -49,60 +49,36 @@ export async function getMenuItems() {
       
       console.log('Menu Filtered Response:', JSON.stringify(response, null, 2))
       console.log('Number of results with Menu checked:', response.results.length)
-    } catch (propError) {
-      console.error('Error filtering by Menu property:', propError)
-      if (propError instanceof Error) {
-        console.error('Property Error message:', propError.message)
-      }
       
-      // Menuプロパティが見つからない場合は、代わりにすべてのページを返す
-      console.log('Falling back to all pages without filter')
-      return allPagesResponse.results.map((page: any) => {
+      // 結果をメニュー項目の配列に変換
+      const menuItems = response.results.map((page: any) => {
         // タイトルプロパティから値を取得
         const titleProperty = page.properties.Name || page.properties.Title
-        const title = titleProperty?.title?.[0]?.plain_text || 'Untitled'
+        const title = titleProperty.title[0]?.plain_text || 'Untitled'
         
-        // URLを構築
+        // URLを構築（既存のサイトのURL構造に合わせる）
         const pageId = page.id.replace(/-/g, '')
-        const url = `/${pageId}`
+        
+        // URLパスを取得（Slugプロパティがあればそれを使用）
+        let url = `/${pageId}`
+        if (page.properties.Slug && page.properties.Slug.rich_text && page.properties.Slug.rich_text[0]) {
+          url = `/${page.properties.Slug.rich_text[0].plain_text}`
+        }
         
         return {
           id: page.id,
           title,
           url
         }
-      }).slice(0, 5) // 最初の5項目だけを返す
-    }
-
-    // 結果をメニュー項目の配列に変換
-    const menuItems = response.results.map((page: any) => {
-      // タイトルプロパティから値を取得
-      const titleProperty = page.properties.Name || page.properties.Title
-      const title = titleProperty.title[0]?.plain_text || 'Untitled'
+      })
       
-      // URLを構築（既存のサイトのURL構造に合わせる）
-      const pageId = page.id.replace(/-/g, '')
-      
-      // URLパスを取得（Slugプロパティがあればそれを使用）
-      let url = `/${pageId}`
-      if (page.properties.Slug && page.properties.Slug.rich_text && page.properties.Slug.rich_text[0]) {
-        url = `/${page.properties.Slug.rich_text[0].plain_text}`
+      // Menuチェックボックスが付いたページがない場合は空の配列を返す
+      if (menuItems.length === 0) {
+        console.log('No menu items found with Menu checkbox checked')
+        return []
       }
       
-      return {
-        id: page.id,
-        title,
-        url
-      }
-    })
-    
-    // Menuチェックボックスが付いたページがない場合は空の配列を返す
-    if (menuItems.length === 0) {
-      console.log('No menu items found with Menu checkbox checked')
-      return []
-    }
-    
-    return menuItems
+      return menuItems
   } catch (error) {
     console.error('Error fetching menu items from Notion:', error)
     // エラーのスタックトレースを出力
