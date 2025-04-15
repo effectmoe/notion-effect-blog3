@@ -132,18 +132,51 @@ export async function searchManually(query: string): Promise<SearchResults> {
     // 検索結果を格納する配列
     const results: any[] = [];
     
-    // ブロックを取得してテキストを検索
+    // ブロックとコレクションを取得してテキストを検索
     if (recordMap.block) {
+      // ページタイトルのマッピングを保存するオブジェクト
+      const pageTitles: {[key: string]: string} = {};
+      
+      // まず、ブロックからページのタイトルを抽出
       Object.entries(recordMap.block).forEach(([id, blockData]) => {
         const block = blockData.value;
         if (!block) return;
         
-        // タイトルブロックやテキストブロックを確認
-        if (block.properties) {
+        // ページタイプのブロックを見つける
+        if (block.type === 'page' && block.properties && block.properties.title) {
           const title = block.properties.title;
-          let blockText = '';
+          let pageTitle = '';
           
-          if (title && Array.isArray(title)) {
+          if (Array.isArray(title)) {
+            // Notionのテキスト配列からテキストを抽出
+            title.forEach(textChunk => {
+              if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
+                pageTitle += textChunk[0];
+              }
+            });
+          }
+          
+          if (pageTitle) {
+            pageTitles[id] = pageTitle;
+          }
+        }
+      });
+      
+      console.log(`Found ${Object.keys(pageTitles).length} page titles`);
+      
+      // 次に、すべてのブロックをスキャンして検索
+      Object.entries(recordMap.block).forEach(([id, blockData]) => {
+        const block = blockData.value;
+        if (!block) return;
+        
+        // ブロックのテキストコンテンツを抽出
+        let blockText = '';
+        let blockTitle = '';
+        
+        if (block.properties && block.properties.title) {
+          const title = block.properties.title;
+          
+          if (Array.isArray(title)) {
             // Notionのテキスト配列からテキストを抽出
             title.forEach(textChunk => {
               if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
@@ -151,24 +184,78 @@ export async function searchManually(query: string): Promise<SearchResults> {
               }
             });
           }
+        }
+        
+        // ページのタイトルがあればそれを使用
+        if (block.type === 'page' && pageTitles[id]) {
+          blockTitle = pageTitles[id];
+        } else {
+          // ページでない場合は、テキストの最初の部分をタイトルとして使用
+          blockTitle = blockText.substring(0, 80) + (blockText.length > 80 ? '...' : '');
+        }
+        
+        // テキスト内に検索クエリが含まれるか確認
+        if (blockText.toLowerCase().includes(searchLowerCase)) {
+          // 親ページIDを取得（可能な場合）
+          const parentId = block.parent_id || block.parent_table === 'collection' ? block.parent_id : null;
+          const parentTitle = parentId && pageTitles[parentId] ? pageTitles[parentId] : '';
           
-          // テキスト内に検索クエリが含まれるか確認
-          if (blockText.toLowerCase().includes(searchLowerCase)) {
-            results.push({
-              id,
-              title: blockText.substring(0, 80) + (blockText.length > 80 ? '...' : ''),
-              url: `/p/${id}`,
-              preview: {
-                text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
-              },
-              isNavigable: true,
-              score: 1.0,
-              highlight: {
-                pathText: `/p/${id}`,
-                text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
-              }
-            });
-          }
+          // 検索結果に追加（親ページのタイトルも含める）
+          results.push({
+            id,
+            title: blockTitle || '無題',
+            url: `/p/${id}`,
+            preview: {
+              text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
+            },
+            parent: parentTitle ? {
+              title: parentTitle,
+              id: parentId
+            } : null,
+            isNavigable: true,
+            score: 1.0,
+            object: block.type === 'page' ? 'page' : 'block',
+            highlight: {
+              pathText: parentTitle ? `${parentTitle} > ${blockTitle}` : blockTitle,
+              text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
+            }
+          });
+        }
+      });
+    }
+    
+    // コレクションも検索
+    if (recordMap.collection) {
+      Object.entries(recordMap.collection).forEach(([collectionId, collectionData]) => {
+        const collection = collectionData.value;
+        if (!collection) return;
+        
+        // コレクション名を検索
+        let collectionName = '';
+        if (collection.name && Array.isArray(collection.name)) {
+          collection.name.forEach(textChunk => {
+            if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
+              collectionName += textChunk[0];
+            }
+          });
+        }
+        
+        if (collectionName.toLowerCase().includes(searchLowerCase)) {
+          results.push({
+            id: collectionId,
+            title: collectionName,
+            url: `/p/${collectionId}`,
+            preview: {
+              text: `データベース: ${collectionName}`
+            },
+            isNavigable: true,
+            score: 1.0,
+            object: 'collection',
+            highlight: {
+              pathText: `データベース: ${collectionName}`,
+              text: `データベース: ${collectionName}`
+            }
+          });
         }
       });
     }

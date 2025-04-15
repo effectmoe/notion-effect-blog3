@@ -246,6 +246,19 @@
   white-space: nowrap;
 }
 
+.parentInfo {
+  margin-bottom: 4px;
+}
+
+.parentTitle {
+  font-size: 12px;
+  color: #777;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
 .searchResultPreview {
   font-size: 14px;
   color: #555;
@@ -376,6 +389,11 @@
 
 :global(.dark-mode) .apiToggleText {
   color: #adb5bd;
+}
+
+:global(.dark-mode) .parentTitle {
+  color: #adb5bd;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 :global(.dark-mode) .searchResultsTitle {

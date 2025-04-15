@@ -264,8 +264,15 @@ export const NotionSearch: React.FC = () => {
                           
                           <div className={styles.resultContent}>
                             <h4 className={styles.searchResultTitle}>
-                              {result.title || 'Untitled'}
+                              {result.title || '無題'}
                             </h4>
+                            
+                            {/* 親ページ情報があれば表示 */}
+                            {result.parent && result.parent.title && (
+                              <div className={styles.parentInfo}>
+                                <span className={styles.parentTitle}>親ページ: {result.parent.title}</span>
+                              </div>
+                            )}
                             
                             {/* プレビューテキスト */}
                             {result.preview && result.preview.text && (
