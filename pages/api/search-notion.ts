@@ -92,6 +92,12 @@ export default async function searchNotionHandler(
               date: publishDate,
               object: 'page',
               properties: properties, // 詳細表示のために全プロパティを渡す
+              isNavigable: true, // notion-typesの互換性のために追加
+              score: 0.9, // notion-typesの互換性のために追加
+              highlight: {
+                title: [],
+                text: []
+              }
             };
           }
           
@@ -110,6 +116,12 @@ export default async function searchNotionHandler(
               },
               object: 'database',
               schema: result.properties, // データベースのスキーマ情報
+              isNavigable: true,
+              score: 0.8,
+              highlight: {
+                title: [],
+                text: []
+              }
             };
           }
           
@@ -154,6 +166,12 @@ export default async function searchNotionHandler(
               object: 'block',
               type: blockType,
               parentId: result.parent?.page_id || result.parent?.database_id || '',
+              isNavigable: true,
+              score: 0.7,
+              highlight: {
+                title: [],
+                text: []
+              }
             };
           }
           
@@ -166,6 +184,12 @@ export default async function searchNotionHandler(
               text: `Notion ${result.object || 'item'}`,
             },
             object: result.object || 'unknown',
+            isNavigable: true,
+            score: 0.5,
+            highlight: {
+              title: [],
+              text: []
+            }
           };
         }),
         total: officialResults.length,

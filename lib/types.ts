@@ -107,6 +107,14 @@ export interface SearchResult {
   object?: string
   type?: string
   properties?: Record<string, any>
+  
+  // notion-types の SearchResult に必要なプロパティ
+  isNavigable?: boolean
+  score?: number
+  highlight?: {
+    title?: string[]
+    text?: string[]
+  }
 }
 
 export interface SearchResults {
