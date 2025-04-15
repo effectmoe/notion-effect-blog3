@@ -98,11 +98,90 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   
   try {
     // 検索実行
+    console.log('Starting Notion search with params:', JSON.stringify(params, null, 2));
     const results = await notion.search(params);
-    console.log(`Found ${results.results?.length || 0} results for query: ${params.query}`);
+    console.log(`Notion search complete. Found ${results.results?.length || 0} results for query: ${params.query}`);
+    
+    // 検索結果の詳細をログに出力
+    if (results.results?.length > 0) {
+      console.log('Search results sample:', JSON.stringify(results.results[0], null, 2));
+    } else {
+      console.log('No results found, full response:', JSON.stringify(results, null, 2));
+    }
+    
     return results;
   } catch (err) {
     console.error('Search error:', err);
+    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults;
+  }
+}
+
+// 代替検索実装 - 基本的なNotionページ取得で手動フィルタリング
+export async function searchManually(query: string): Promise<SearchResults> {
+  try {
+    // rootNotionPageIdからページを取得
+    console.log(`Manually searching for "${query}" by getting root page ${rootNotionPageId}`);
+    const recordMap = await notion.getPage(rootNotionPageId, {
+      fetchCollections: true, // コレクションも取得
+      signFileUrls: true,
+    });
+    
+    // 検索クエリを小文字に変換
+    const searchLowerCase = query.toLowerCase();
+    
+    // 検索結果を格納する配列
+    const results: any[] = [];
+    
+    // ブロックを取得してテキストを検索
+    if (recordMap.block) {
+      Object.entries(recordMap.block).forEach(([id, blockData]) => {
+        const block = blockData.value;
+        if (!block) return;
+        
+        // タイトルブロックやテキストブロックを確認
+        if (block.properties) {
+          const title = block.properties.title;
+          let blockText = '';
+          
+          if (title && Array.isArray(title)) {
+            // Notionのテキスト配列からテキストを抽出
+            title.forEach(textChunk => {
+              if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
+                blockText += textChunk[0];
+              }
+            });
+          }
+          
+          // テキスト内に検索クエリが含まれるか確認
+          if (blockText.toLowerCase().includes(searchLowerCase)) {
+            results.push({
+              id,
+              title: blockText.substring(0, 80) + (blockText.length > 80 ? '...' : ''),
+              url: `/p/${id}`,
+              preview: {
+                text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
+              },
+              isNavigable: true,
+              score: 1.0,
+              highlight: {
+                pathText: `/p/${id}`,
+                text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
+              }
+            });
+          }
+        }
+      });
+    }
+    
+    console.log(`Manual search found ${results.length} results for "${query}"`);
+    
+    return {
+      results,
+      total: results.length,
+      recordMap: { block: {} }
+    };
+  } catch (err) {
+    console.error('Manual search error:', err);
     return { results: [], total: 0, recordMap: { block: {} } } as SearchResults;
   }
 }

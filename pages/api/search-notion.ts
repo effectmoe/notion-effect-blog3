@@ -1,7 +1,7 @@
 import { type NextApiRequest, type NextApiResponse } from 'next'
 
 import type * as types from '../../lib/types'
-import { search } from '../../lib/notion'
+import { search, searchManually } from '../../lib/notion'
 import { searchNotion as searchNotionOfficial, parsePageProperties } from '../../lib/notion-official-api'
 import { richTextToPlainText } from '../../lib/notion-utils'
 import * as config from '../../lib/config'
@@ -203,10 +203,24 @@ export default async function searchNotionHandler(
         }
       };
     } else {
-      // 非公式APIを使用した検索（既存の実装）
-      // リクエストのパラメータをそのまま渡す
-      // search関数内部でrootNotionPageIdが設定される
-      results = await search(searchParams as types.SearchParams);
+      // 標準の検索が動かない場合、手動検索にフォールバック
+      try {
+        console.log('Trying standard search first...');
+        // 非公式APIを使用した検索（既存の実装）
+        // リクエストのパラメータをそのまま渡す
+        // search関数内部でrootNotionPageIdが設定される
+        results = await search(searchParams as types.SearchParams);
+
+        // 結果が空の場合、手動検索にフォールバック
+        if (!results.results || results.results.length === 0) {
+          console.log('No results from standard search, falling back to manual search...');
+          results = await searchManually(searchParams.query);
+        }
+      } catch (searchError) {
+        console.error('Standard search failed, trying manual search...', searchError);
+        // 標準の検索が失敗した場合、手動検索で再試行
+        results = await searchManually(searchParams.query);
+      }
     }
     
     console.log('>>> lambda search-notion', results);
