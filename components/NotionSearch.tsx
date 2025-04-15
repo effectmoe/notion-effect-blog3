@@ -268,11 +268,11 @@ export const NotionSearch: React.FC = () => {
                             </h4>
                             
                             {/* 親ページ情報があれば表示 */}
-                            {result.parent && result.parent.title && (
+                            {result.parent?.title ? (
                               <div className={styles.parentInfo}>
                                 <span className={styles.parentTitle}>親ページ: {result.parent.title}</span>
                               </div>
-                            )}
+                            ) : null}
                             
                             {/* プレビューテキスト */}
                             {result.preview && result.preview.text && (
