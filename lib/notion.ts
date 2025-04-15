@@ -208,8 +208,8 @@ export async function searchManually(query: string): Promise<SearchResults> {
             preview: {
               text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
             },
-            parent: parentTitle ? {
-              title: parentTitle,
+            parent: parentId ? {
+              title: parentTitle || 'Parent Page',
               id: parentId
             } : null,
             isNavigable: true,

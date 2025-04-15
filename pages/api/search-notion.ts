@@ -31,7 +31,7 @@ export default async function searchNotionHandler(
       // 公式APIを使用した検索
       const officialResults = await searchNotionOfficial(query);
       
-      // 結果を非公式APIの形式に合わせて変換
+      // 結果を非公式APIの形式に合わせて変換して、サイト内URLに変換
       results = {
         results: officialResults.map((result: any) => {
           // ページの場合
@@ -89,7 +89,7 @@ export default async function searchNotionHandler(
             return {
               id: result.id,
               title,
-              url: result.url,
+              url: `/p/${result.id}`, // サイト内URLに変換
               preview: {
                 text: previewText,
               },
@@ -104,7 +104,7 @@ export default async function searchNotionHandler(
               isNavigable: true, // notion-typesの互換性のために追加
               score: 0.9, // notion-typesの互換性のために追加
               highlight: {
-                pathText: result.url || '',
+                pathText: `/p/${result.id}`,
                 text: previewText || 'No preview available'
               }
             };
@@ -119,9 +119,9 @@ export default async function searchNotionHandler(
             return {
               id: result.id,
               title,
-              url: result.url,
+              url: `/p/${result.id}`, // サイト内URLに変換
               preview: {
-                text: `Database with ${result.title?.length || 0} columns`,
+                text: `データベース: ${title}`,
               },
               object: 'database',
               schema: result.properties as Record<string, any>, // データベースのスキーマ情報
@@ -132,8 +132,8 @@ export default async function searchNotionHandler(
               isNavigable: true,
               score: 0.8,
               highlight: {
-                pathText: result.url || '',
-                text: `Database with ${result.title?.length || 0} columns`
+                pathText: `/p/${result.id}`,
+                text: `データベース: ${title}`
               }
             };
           }
@@ -169,25 +169,28 @@ export default async function searchNotionHandler(
             const blockTypeDisplay = blockType.replace(/_/g, ' ');
             const blockTitle = text ? text.substring(0, 30) + (text.length > 30 ? '...' : '') : blockTypeDisplay;
             
+            // 親ページIDを取得
+            const parentId = result.parent?.page_id || result.parent?.database_id || '';
+            
             return {
               id: result.id,
               title: blockTitle,
-              url: result.url || '',
+              url: parentId ? `/p/${parentId}` : `/p/${result.id}`, // 親ページのURLに変換
               preview: {
-                text: text || `${blockTypeDisplay} block`,
+                text: text || `${blockTypeDisplay}`,
               },
               object: 'block',
               type: blockType,
-              parentId: result.parent?.page_id || result.parent?.database_id || '',
-              parent: result.parent?.page_id || result.parent?.database_id ? {
-                id: result.parent?.page_id || result.parent?.database_id || '',
+              parentId: parentId,
+              parent: parentId ? {
+                id: parentId,
                 title: 'Parent Page' // 親ページタイトルのデフォルト値
               } : undefined,
               isNavigable: true,
               score: 0.7,
               highlight: {
-                pathText: result.url || '',
-                text: text || `${blockTypeDisplay} block`
+                pathText: parentId ? `/p/${parentId}` : `/p/${result.id}`,
+                text: text || `${blockTypeDisplay}`
               }
             };
           }
@@ -196,16 +199,16 @@ export default async function searchNotionHandler(
           return {
             id: result.id,
             title: result.object || 'Notion Item',
-            url: result.url || '',
+            url: `/p/${result.id}`, // サイト内URLに変換
             preview: {
-              text: `Notion ${result.object || 'item'}`,
+              text: `${result.object || 'item'}`,
             },
             object: result.object || 'unknown',
             isNavigable: true,
             score: 0.5,
             highlight: {
-              pathText: result.url || '',
-              text: `Notion ${result.object || 'item'}`
+              pathText: `/p/${result.id}`,
+              text: `${result.object || 'item'}`
             }
           };
         }),

@@ -265,7 +265,7 @@ export const NotionSearch = () => {
                     {searchResults.map((result) => (
                       <li key={result.id} className={styles.searchResultItem}>
                         <Link
-                          href={result.url || `/p/${result.id}`}
+                          href={result.url}
                           onClick={handleResultClick}
                           className={cs(styles.searchResultLink, {
                             [styles.pageResult]: result.object === 'page',
@@ -293,14 +293,12 @@ export const NotionSearch = () => {
                               {result.title || '無題'}
                             </h4>
                             
-                            {/* 親ページ情報はコメントアウト - 問題のある箇所 */}
-                            {/* 
+                            {/* 親ページ情報の表示 */}
                             {result.parent?.title && (
                               <div className={styles.parentInfo}>
                                 <span className={styles.parentTitle}>親ページ: {result.parent.title}</span>
                               </div>
                             )}
-                            */}
                             
                             {/* プレビューテキスト */}
                             {result.preview && result.preview.text && (
