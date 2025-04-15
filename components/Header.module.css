@@ -407,6 +407,11 @@
     padding: 0 1rem;
   }
   
+  /* スマホサイズではデスクトップナビゲーションを非表示 */
+  .desktopNav {
+    display: none;
+  }
+  
   .searchOverlay {
     top: 55px;
   }

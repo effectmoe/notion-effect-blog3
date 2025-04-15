@@ -130,26 +130,24 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           <Logo />
         </div>
 
-        {/* デスクトップ用ナビゲーション（PC表示のみ） */}
-        {!isMobile && (
-          <nav className={styles.desktopNav}>
-            <ul className={styles.navList}>
-              {menuItems.map((item) => (
-                <li key={item.id} className={styles.navItem}>
-                  <Link 
-                    href={item.url} 
-                    className={cs(
-                      styles.navLink,
-                      isActive(item.url) && styles.activeLink
-                    )}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        {/* デスクトップ用ナビゲーション */}
+        <nav className={styles.desktopNav}>
+          <ul className={styles.navList}>
+            {menuItems.map((item) => (
+              <li key={item.id} className={styles.navItem}>
+                <Link 
+                  href={item.url} 
+                  className={cs(
+                    styles.navLink,
+                    isActive(item.url) && styles.activeLink
+                  )}
+                >
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
@@ -198,21 +196,19 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
             </a>
           )}
 
-          {/* ハンバーガーメニューボタン（モバイル表示のみ） */}
-          {isMobile && (
-            <button 
-              className={styles.mobileMenuButton} 
-              onClick={toggleMenu}
-              aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-              aria-expanded={menuOpen}
-            >
-              <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </button>
-          )}
+          {/* ハンバーガーメニューボタン（常に表示） */}
+          <button 
+            className={styles.mobileMenuButton} 
+            onClick={toggleMenu}
+            aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+            aria-expanded={menuOpen}
+          >
+            <div className={`${styles.hamburgerIcon} ${menuOpen ? styles.open : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
         </div>
       </div>
 
@@ -231,32 +227,30 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
         </div>
       </div>
 
-      {/* モバイルメニュー（モバイル表示のみ） */}
-      {isMobile && (
-        <div className={cs(
-          styles.mobileMenu,
-          menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
-        )}>
-          <nav className={styles.mobileNav}>
-            <ul className={styles.mobileNavList}>
-              {menuItems.map((item) => (
-                <li key={item.id} className={styles.mobileNavItem}>
-                  <Link 
-                    href={item.url} 
-                    className={cs(
-                      styles.mobileNavLink,
-                      isActive(item.url) && styles.activeMobileLink
-                    )}
-                    onClick={handleMenuItemClick}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      )}
+      {/* モバイルメニュー（常に表示） */}
+      <div className={cs(
+        styles.mobileMenu,
+        menuOpen ? styles.mobileMenuOpen : styles.mobileMenuClosed
+      )}>
+        <nav className={styles.mobileNav}>
+          <ul className={styles.mobileNavList}>
+            {menuItems.map((item) => (
+              <li key={item.id} className={styles.mobileNavItem}>
+                <Link 
+                  href={item.url} 
+                  className={cs(
+                    styles.mobileNavLink,
+                    isActive(item.url) && styles.activeMobileLink
+                  )}
+                  onClick={handleMenuItemClick}
+                >
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   )
 }

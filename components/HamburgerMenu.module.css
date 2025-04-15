@@ -123,8 +123,4 @@
   }
 }
 
-@media (min-width: 769px) {
-  .hamburgerButton {
-    display: none;
-  }
-}
+/* PCとタブレットでもハンバーガーメニューを表示するため、このメディアクエリは削除 */
