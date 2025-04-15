@@ -12,6 +12,8 @@ export async function simpleSearch(query: string): Promise<SearchResults> {
     // 検索クエリが短すぎる場合は結果を返さない
     if (!query || query.length < 2) {
       return { results: [], total: 0, recordMap: { block: {} } }
+    }
+    
     // 検索クエリを小文字に変換して準備
     const searchLowerCase = query.toLowerCase()
     
