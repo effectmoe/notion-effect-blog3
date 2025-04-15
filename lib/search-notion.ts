@@ -50,7 +50,16 @@ async function searchNotionImpl(
     .catch((err) => {
       console.error('Search request failed:', err)
       return { 
-        results: [], 
+        results: [{
+          id: '',
+          title: 'No results',
+          url: '',
+          preview: {
+            text: 'Search failed. Please try again.'
+          },
+          isNavigable: false,
+          score: 0
+        }], 
         total: 0, 
         recordMap: { 
           block: {}

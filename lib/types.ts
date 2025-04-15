@@ -109,7 +109,7 @@ export interface SearchResult {
   properties?: Record<string, any>
   
   // notion-types の SearchResult に必要なプロパティ
-  isNavigable?: boolean
+  isNavigable: boolean // オプショナルから必須に変更
   score?: number
   highlight?: {
     title?: string[]
