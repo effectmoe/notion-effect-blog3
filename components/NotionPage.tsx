@@ -304,7 +304,7 @@ export function NotionPage({
       <BodyClassName className='no-notion-tabs' />
 
       {/* Notionレンダラー - 内部のヘッダーをnullに設定したので、カスタムヘッダーを外に配置 */}
-      <Header menuItems={menuItems || navigationMenuItems} />
+      <Header menuItems={(menuItems && menuItems.length > 0) ? menuItems : navigationMenuItems} />
 
       <div className={styles.notionPageContainer}>
         <NotionRenderer

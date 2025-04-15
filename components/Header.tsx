@@ -130,24 +130,26 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           <Logo />
         </div>
 
-        {/* デスクトップ用ナビゲーション */}
-        <nav className={styles.desktopNav}>
-          <ul className={styles.navList}>
-            {menuItems.map((item) => (
-              <li key={item.id} className={styles.navItem}>
-                <Link 
-                  href={item.url} 
-                  className={cs(
-                    styles.navLink,
-                    isActive(item.url) && styles.activeLink
-                  )}
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* デスクトップ用ナビゲーション - モバイルでは非表示 */}
+        {isMobile ? null : (
+          <nav className={styles.desktopNav}>
+            <ul className={styles.navList}>
+              {menuItems.map((item) => (
+                <li key={item.id} className={styles.navItem}>
+                  <Link 
+                    href={item.url} 
+                    className={cs(
+                      styles.navLink,
+                      isActive(item.url) && styles.activeLink
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>

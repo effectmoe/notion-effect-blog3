@@ -50,17 +50,17 @@ export async function getMenuItems() {
       }
     })
     
+    // Menuチェックボックスが付いたページがない場合は空の配列を返す
+    if (menuItems.length === 0) {
+      console.log('No menu items found with Menu checkbox checked')
+      return []
+    }
+    
     return menuItems
   } catch (error) {
     console.error('Error fetching menu items from Notion:', error)
-    // エラーが発生した場合はデフォルトメニューを返す
-    return [
-      { id: 'all', title: 'すべて', url: '/' },
-      { id: 'blog', title: 'ブログ', url: '/blog' },
-      { id: 'website', title: 'Webサイト', url: '/website' },
-      { id: 'profile', title: 'プロフィール', url: '/profile' },
-      { id: 'news', title: '新着順', url: '/news' }
-    ]
+    // エラーが発生した場合は空の配列を返す
+    return []
   }
 }
 
