@@ -12,7 +12,7 @@ import styles from './NotionSearch.module.css';
 
 export const NotionSearch: React.FC = () => {
   const router = useRouter();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(true); // 最初から開く
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<types.SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +55,12 @@ export const NotionSearch: React.FC = () => {
         closeSearch();
       }
       
+      // Enterキーで検索を実行（検索ボックスにフォーカスがある場合）
+      if (e.key === 'Enter' && document.activeElement === searchInputRef.current && searchQuery.trim()) {
+        e.preventDefault();
+        performSearch();
+      }
+      
       // Ctrl+K または Command+K で検索パネルを開く
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -64,7 +70,7 @@ export const NotionSearch: React.FC = () => {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openSearch, closeSearch]);
+  }, [openSearch, closeSearch, searchQuery, performSearch]);
 
   // 検索パネル外のクリックで閉じる
   useEffect(() => {
@@ -82,6 +88,13 @@ export const NotionSearch: React.FC = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isSearchOpen, closeSearch]);
+  
+  // コンポーネント初期化時に検索入力欄にフォーカス
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   // 検索実行
   const performSearch = useCallback(async () => {
