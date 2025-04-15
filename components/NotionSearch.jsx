@@ -5,21 +5,47 @@ import { FaTimes } from 'react-icons/fa';
 import Link from 'next/link';
 import cs from 'classnames';
 
-import * as types from '@/lib/types';
-import { searchNotion } from '@/lib/search-notion';
+// スマートなインポート方法
 import * as config from '@/lib/config';
 import styles from './NotionSearch.module.css';
 
-export const NotionSearch: React.FC = () => {
+// SearchNotion関数を直接インポートするのではなく、ラッパーを作成
+const searchNotion = async (params) => {
+  // APIエンドポイントを使って検索を実行
+  try {
+    const response = await fetch(config.api.searchNotion, {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'content-type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Search request failed: ' + response.statusText);
+    }
+    
+    return await response.json();
+  } catch (err) {
+    console.error('Error in searchNotion:', err);
+    return { 
+      results: [], 
+      total: 0, 
+      recordMap: { block: {} } 
+    };
+  }
+};
+
+export const NotionSearch = () => {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(true); // 最初から開く
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<types.SearchResult[]>([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [useOfficialApi, setUseOfficialApi] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchResultsRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef(null);
+  const searchResultsRef = useRef(null);
 
   // 検索結果をリセット
   const resetSearch = useCallback(() => {
@@ -83,7 +109,7 @@ export const NotionSearch: React.FC = () => {
 
   // キーボードショートカット
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e) => {
       // ESCキーで検索パネルを閉じる
       if (e.key === 'Escape') {
         closeSearch();
@@ -108,11 +134,11 @@ export const NotionSearch: React.FC = () => {
 
   // 検索パネル外のクリックで閉じる
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e) => {
       if (
         isSearchOpen && 
         searchResultsRef.current && 
-        !searchResultsRef.current.contains(e.target as Node) &&
+        !searchResultsRef.current.contains(e.target) &&
         e.target !== searchInputRef.current
       ) {
         closeSearch();
@@ -267,12 +293,14 @@ export const NotionSearch: React.FC = () => {
                               {result.title || '無題'}
                             </h4>
                             
-                            {/* 親ページ情報があれば表示 */}
-                            {result.parent?.title ? (
+                            {/* 親ページ情報はコメントアウト - 問題のある箇所 */}
+                            {/* 
+                            {result.parent?.title && (
                               <div className={styles.parentInfo}>
                                 <span className={styles.parentTitle}>親ページ: {result.parent.title}</span>
                               </div>
-                            ) : null}
+                            )}
+                            */}
                             
                             {/* プレビューテキスト */}
                             {result.preview && result.preview.text && (
