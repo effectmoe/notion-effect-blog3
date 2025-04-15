@@ -112,5 +112,8 @@ export interface SearchResult {
 export interface SearchResults {
   results: SearchResult[]
   total: number
-  recordMap?: Record<string, Record<string, any>>
+  recordMap: {
+    block: Record<string, any>
+    [key: string]: Record<string, any>
+  }
 }
