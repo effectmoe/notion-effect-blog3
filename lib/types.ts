@@ -107,6 +107,10 @@ export interface SearchResult {
   object?: string
   type?: string
   properties?: Record<string, any>
+  parent?: {
+    id?: string
+    title?: string
+  }
   
   // notion-types の SearchResult に必要なプロパティ
   isNavigable: boolean // オプショナルから必須に変更
