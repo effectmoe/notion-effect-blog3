@@ -3,7 +3,7 @@ import { Client } from '@notionhq/client'
 
 // Notion API クライアントのインスタンスを作成
 const notion = new Client({
-  auth: process.env.NOTION_TOKEN, // 環境変数の名前を修正
+  auth: process.env.NOTION_API_SECRET, // 環境変数の名前を修正
 })
 
 // メニュー用データベースID - Notionのデータベース表示URLから取得
