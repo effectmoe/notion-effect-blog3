@@ -85,3 +85,32 @@ export interface NotionPageInfo {
   authorImage: string
   detail: string
 }
+
+export interface SearchParams {
+  query: string
+  ancestorId?: string
+  limit?: number
+  userLocale?: string
+  useOfficialApi?: boolean
+}
+
+export interface SearchResult {
+  id: string
+  title: string
+  url: string
+  preview?: {
+    text?: string
+    imageUrl?: string
+  }
+  cover?: string
+  date?: string
+  object?: string
+  type?: string
+  properties?: Record<string, any>
+}
+
+export interface SearchResults {
+  results: SearchResult[]
+  total: number
+  recordMap?: Record<string, Record<string, any>>
+}
