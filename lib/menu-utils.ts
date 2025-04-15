@@ -1,6 +1,5 @@
 import { Client } from '@notionhq/client'
-import { mapImageUrl } from 'notion-utils'
-import { mapNotionImageUrl } from './map-image-url'
+// 不要なインポートを削除
 
 // Notion API クライアントのインスタンスを作成
 const notion = new Client({
