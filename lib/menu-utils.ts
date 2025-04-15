@@ -1,17 +1,34 @@
 import { Client } from '@notionhq/client'
-// 不要なインポートを削除
+import * as config from './config'
 
 // Notion API クライアントのインスタンスを作成
 const notion = new Client({
   auth: process.env.NOTION_API_SECRET, // 環境変数の名前を修正
 })
 
-// メニュー用データベースID - Notionのデータベース表示URLから取得
-const DATABASE_ID = '1ceb802cb0c6814ab43eddb38e80f2e0'
+// メニュー用データベースID - 環境変数やサイト設定から取得
+const DATABASE_ID = process.env.NOTION_PAGE_ID || '1ceb802cb0c680f29369dba86095fb38'
 
 // NotionデータベースからMenuプロパティがtrueのページを取得
 export async function getMenuItems() {
   try {
+    console.log('Fetching menu items with DATABASE_ID:', DATABASE_ID)
+    
+    // まず、すべてのページを取得して、プロパティの構造を確認
+    const allPagesResponse = await notion.databases.query({
+      database_id: DATABASE_ID,
+    })
+    
+    console.log('All Pages Response:', JSON.stringify(allPagesResponse, null, 2))
+    console.log('Number of all pages:', allPagesResponse.results.length)
+    
+    // 最初のページのプロパティを確認
+    if (allPagesResponse.results.length > 0) {
+      const firstPage = allPagesResponse.results[0]
+      console.log('First page properties:', JSON.stringify(firstPage.properties, null, 2))
+    }
+    
+    // Menuプロパティを持つページをフィルタリング
     const response = await notion.databases.query({
       database_id: DATABASE_ID,
       filter: {
@@ -27,6 +44,9 @@ export async function getMenuItems() {
         }
       ],
     })
+    
+    console.log('API Response:', JSON.stringify(response, null, 2))
+    console.log('Number of results:', response.results.length)
 
     // 結果をメニュー項目の配列に変換
     const menuItems = response.results.map((page: any) => {
@@ -59,6 +79,11 @@ export async function getMenuItems() {
     return menuItems
   } catch (error) {
     console.error('Error fetching menu items from Notion:', error)
+    // エラーのスタックトレースを出力
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack)
+      console.error('Error message:', error.message)
+    }
     // エラーが発生した場合は空の配列を返す
     return []
   }
