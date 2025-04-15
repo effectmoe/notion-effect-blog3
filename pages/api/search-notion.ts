@@ -95,8 +95,8 @@ export default async function searchNotionHandler(
               isNavigable: true, // notion-typesの互換性のために追加
               score: 0.9, // notion-typesの互換性のために追加
               highlight: {
-                title: [],
-                text: []
+                pathText: result.url || '',
+                text: previewText || 'No preview available'
               }
             };
           }
@@ -119,8 +119,8 @@ export default async function searchNotionHandler(
               isNavigable: true,
               score: 0.8,
               highlight: {
-                title: [],
-                text: []
+                pathText: result.url || '',
+                text: `Database with ${result.title?.length || 0} columns`
               }
             };
           }
@@ -169,8 +169,8 @@ export default async function searchNotionHandler(
               isNavigable: true,
               score: 0.7,
               highlight: {
-                title: [],
-                text: []
+                pathText: result.url || '',
+                text: text || `${blockTypeDisplay} block`
               }
             };
           }
@@ -187,8 +187,8 @@ export default async function searchNotionHandler(
             isNavigable: true,
             score: 0.5,
             highlight: {
-              title: [],
-              text: []
+              pathText: result.url || '',
+              text: `Notion ${result.object || 'item'}`
             }
           };
         }),

@@ -58,7 +58,11 @@ async function searchNotionImpl(
             text: 'Search failed. Please try again.'
           },
           isNavigable: false,
-          score: 0
+          score: 0,
+          highlight: {
+            pathText: '',
+            text: 'Search failed. Please try again.'
+          }
         }], 
         total: 0, 
         recordMap: { 
