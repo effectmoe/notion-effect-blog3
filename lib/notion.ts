@@ -71,32 +71,24 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
-  // rootNotionPageIdがなければ追加
-  if (!params.ancestorId) {
-    params.ancestorId = process.env.NOTION_PAGE_ID
-  }
-  
-  // 検索フィルタの最適化
-  // 型エラーを回避するために型アサーションを使用
-  params.filters = {
-    ...(params.filters || {}),
-    isDeletedOnly: false,
-    excludeTemplates: true,
-    isNavigableOnly: false,    // falseに変更して検索範囲を広げる
-    requireEditPermissions: false,
-  } as any;  // 型アサーションを使用
+  // パラメータをログに出力
+  console.log('Search function params:', JSON.stringify(params, null, 2));
   
   // 必要なカスタムプロパティを追加
-  (params.filters as any).includePublicPagesWithoutExplicitAccess = true;
-  (params.filters as any).ancestorIds = [process.env.NOTION_PAGE_ID];
+  params.filters = {
+    isDeletedOnly: false,
+    excludeTemplates: true,
+    isNavigableOnly: true,    // trueに戻す
+    requireEditPermissions: false,
+  };
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
     return { results: [], total: 0, recordMap: { block: {} } } as SearchResults
   }
-
-  // 検索クエリの前処理（必要に応じてコメントアウト解除）
-  // params.query = params.query.trim();
+  (params.filters as any).includePublicPagesWithoutExplicitAccess = true;
+  // configからインポートしたIDを使用
+  (params.filters as any).ancestorIds = [params.ancestorId];
   
   // 検索結果の最大数を指定
   params.limit = params.limit || 50;  // デフォルトより多くの結果を取得
