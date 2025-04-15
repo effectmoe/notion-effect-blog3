@@ -47,6 +47,40 @@ export const NotionSearch: React.FC = () => {
     resetSearch();
   }, [resetSearch]);
 
+  // 検索実行
+  const performSearch = useCallback(async () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // 検索リクエストのパラメータをログに出力
+      console.log('Search request params:', { 
+        query: searchQuery,
+        ancestorId: config.api.notionPageId,
+        useOfficialApi
+      });
+      
+      const results = await searchNotion({
+        query: searchQuery,
+        ancestorId: config.api.notionPageId, // NotionページIDを設定
+        useOfficialApi
+      });
+      
+      console.log('Search results:', results?.results?.length || 0);
+      setSearchResults(results?.results || []);
+    } catch (err) {
+      console.error('Error performing search:', err);
+      setError('検索中にエラーが発生しました。もう一度お試しください。');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchQuery, useOfficialApi]);
+
   // キーボードショートカット
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -95,40 +129,6 @@ export const NotionSearch: React.FC = () => {
       searchInputRef.current.focus();
     }
   }, [isSearchOpen]);
-
-  // 検索実行
-  const performSearch = useCallback(async () => {
-    if (!searchQuery.trim()) {
-      setSearchResults([]);
-      return;
-    }
-    
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      // 検索リクエストのパラメータをログに出力
-      console.log('Search request params:', { 
-        query: searchQuery,
-        ancestorId: config.api.notionPageId,
-        useOfficialApi
-      });
-      
-      const results = await searchNotion({
-        query: searchQuery,
-        ancestorId: config.api.notionPageId, // NotionページIDを設定
-        useOfficialApi
-      });
-      
-      console.log('Search results:', results?.results?.length || 0);
-      setSearchResults(results?.results || []);
-    } catch (err) {
-      console.error('Error performing search:', err);
-      setError('検索中にエラーが発生しました。もう一度お試しください。');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [searchQuery, useOfficialApi]);
 
   // 検索クエリが変更されたら自動検索
   useEffect(() => {
