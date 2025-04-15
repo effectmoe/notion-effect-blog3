@@ -42,7 +42,7 @@ export default async function searchNotionHandler(
               title = properties.Name;
             } else if (result.properties) {
               // プロパティを順番に確認
-              for (const [key, value] of Object.entries(result.properties)) {
+              for (const [key, value] of Object.entries(result.properties as Record<string, any>)) {
                 if (value.type === 'title' && value.title?.length > 0) {
                   title = richTextToPlainText(value.title);
                   break;
@@ -60,7 +60,7 @@ export default async function searchNotionHandler(
               previewText = properties.Preview;
             } else if (result.properties) {
               // リッチテキストプロパティから最初のものを使用
-              for (const [key, value] of Object.entries(result.properties)) {
+              for (const [key, value] of Object.entries(result.properties as Record<string, any>)) {
                 if (value.type === 'rich_text' && value.rich_text?.length > 0) {
                   previewText = richTextToPlainText(value.rich_text);
                   if (previewText) break;
@@ -115,7 +115,7 @@ export default async function searchNotionHandler(
                 text: `Database with ${result.title?.length || 0} columns`,
               },
               object: 'database',
-              schema: result.properties, // データベースのスキーマ情報
+              schema: result.properties as Record<string, any>, // データベースのスキーマ情報
               isNavigable: true,
               score: 0.8,
               highlight: {
