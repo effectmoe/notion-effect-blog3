@@ -7,6 +7,7 @@ import cs from 'classnames';
 
 import * as types from '@/lib/types';
 import { searchNotion } from '@/lib/search-notion';
+import * as config from '@/lib/config';
 import styles from './NotionSearch.module.css';
 
 export const NotionSearch: React.FC = () => {
@@ -95,6 +96,7 @@ export const NotionSearch: React.FC = () => {
     try {
       const results = await searchNotion({
         query: searchQuery,
+        ancestorId: config.api.notionPageId, // NotionページIDを設定
         useOfficialApi
       });
       
