@@ -6,8 +6,8 @@ const notion = new Client({
   auth: process.env.NOTION_API_SECRET, // 環境変数の名前を修正
 })
 
-// メニュー用データベースID - 環境変数やサイト設定から取得
-const DATABASE_ID = process.env.NOTION_PAGE_ID || '1ceb802cb0c680f29369dba86095fb38'
+// メニュー用データベースID - ユーザーから提供された正確なデータベースID
+const DATABASE_ID = '1ceb802cb0c6814ab43eddb38e80f2e0'
 
 // NotionデータベースからMenuプロパティがtrueのページを取得
 export async function getMenuItems() {
@@ -28,25 +28,51 @@ export async function getMenuItems() {
       console.log('First page properties:', JSON.stringify(firstPage.properties, null, 2))
     }
     
-    // Menuプロパティを持つページをフィルタリング
-    const response = await notion.databases.query({
-      database_id: DATABASE_ID,
-      filter: {
-        property: 'Menu',
-        checkbox: {
-          equals: true
+    // Menuプロパティが見つからない場合のエラー処理
+    try {
+      // Menuプロパティを持つページをフィルタリング
+      const response = await notion.databases.query({
+        database_id: DATABASE_ID,
+        filter: {
+          property: 'Menu',
+          checkbox: {
+            equals: true
+          }
+        },
+        sorts: [
+          {
+            property: 'Order',  // もし順序を指定するプロパティがあれば
+            direction: 'ascending'
+          }
+        ],
+      })
+      
+      console.log('Menu Filtered Response:', JSON.stringify(response, null, 2))
+      console.log('Number of results with Menu checked:', response.results.length)
+    } catch (propError) {
+      console.error('Error filtering by Menu property:', propError)
+      if (propError instanceof Error) {
+        console.error('Property Error message:', propError.message)
+      }
+      
+      // Menuプロパティが見つからない場合は、代わりにすべてのページを返す
+      console.log('Falling back to all pages without filter')
+      return allPagesResponse.results.map((page: any) => {
+        // タイトルプロパティから値を取得
+        const titleProperty = page.properties.Name || page.properties.Title
+        const title = titleProperty?.title?.[0]?.plain_text || 'Untitled'
+        
+        // URLを構築
+        const pageId = page.id.replace(/-/g, '')
+        const url = `/${pageId}`
+        
+        return {
+          id: page.id,
+          title,
+          url
         }
-      },
-      sorts: [
-        {
-          property: 'Order',  // もし順序を指定するプロパティがあれば
-          direction: 'ascending'
-        }
-      ],
-    })
-    
-    console.log('API Response:', JSON.stringify(response, null, 2))
-    console.log('Number of results:', response.results.length)
+      }).slice(0, 5) // 最初の5項目だけを返す
+    }
 
     // 結果をメニュー項目の配列に変換
     const menuItems = response.results.map((page: any) => {
