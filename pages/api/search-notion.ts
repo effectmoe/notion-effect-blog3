@@ -169,6 +169,9 @@ export default async function searchNotionHandler(
           };
         }),
         total: officialResults.length,
+        recordMap: {
+          block: {}
+        }
       };
     } else {
       // 非公式APIを使用した検索（既存の実装）
