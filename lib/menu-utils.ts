@@ -1,5 +1,6 @@
 import { Client } from '@notionhq/client'
 import * as config from './config'
+import { PageObjectResponse, PartialPageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
 // Notion API クライアントのインスタンスを作成
 const notion = new Client({
@@ -25,7 +26,12 @@ export async function getMenuItems() {
     // 最初のページのプロパティを確認
     if (allPagesResponse.results.length > 0) {
       const firstPage = allPagesResponse.results[0]
-      console.log('First page properties:', JSON.stringify(firstPage.properties, null, 2))
+      // PageObjectResponseかどうかを確認するタイプガードを追加
+      if ('properties' in firstPage) {
+        console.log('First page properties:', JSON.stringify(firstPage.properties, null, 2))
+      } else {
+        console.log('First page does not have properties field')
+      }
     }
     
     // Menuプロパティが見つからない場合のエラー処理
@@ -41,8 +47,8 @@ export async function getMenuItems() {
         },
         sorts: [
           {
-            property: 'Order',  // もし順序を指定するプロパティがあれば
-            direction: 'ascending'
+            property: 'Last Updated',  // 更新日時で並べ替え
+            direction: 'descending'
           }
         ],
       })
@@ -51,26 +57,36 @@ export async function getMenuItems() {
       console.log('Number of results with Menu checked:', response.results.length)
       
       // 結果をメニュー項目の配列に変換
-      const menuItems = response.results.map((page: any) => {
-        // タイトルプロパティから値を取得
-        const titleProperty = page.properties.Name || page.properties.Title
-        const title = titleProperty.title[0]?.plain_text || 'Untitled'
-        
-        // URLを構築（既存のサイトのURL構造に合わせる）
-        const pageId = page.id.replace(/-/g, '')
-        
-        // URLパスを取得（Slugプロパティがあればそれを使用）
-        let url = `/${pageId}`
-        if (page.properties.Slug && page.properties.Slug.rich_text && page.properties.Slug.rich_text[0]) {
-          url = `/${page.properties.Slug.rich_text[0].plain_text}`
-        }
-        
-        return {
-          id: page.id,
-          title,
-          url
-        }
-      })
+      const menuItems = response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page) // タイプガードフィルター
+        .map((page) => {
+          try {
+            // タイトルプロパティから値を取得
+            const titleProperty = page.properties.Name || page.properties.Title
+            const title = titleProperty?.title?.[0]?.plain_text || 'Untitled'
+            
+            // URLを構築（既存のサイトのURL構造に合わせる）
+            const pageId = page.id.replace(/-/g, '')
+            
+            // URLパスを取得（Slugプロパティがあればそれを使用）
+            let url = `/${pageId}`
+            const slugProperty = page.properties.Slug
+            if (slugProperty && 'rich_text' in slugProperty && 
+                slugProperty.rich_text && slugProperty.rich_text[0]) {
+              url = `/${slugProperty.rich_text[0].plain_text}`
+            }
+            
+            return {
+              id: page.id,
+              title,
+              url
+            }
+          } catch (err) {
+            console.error(`Error processing page ${page.id}:`, err)
+            return null
+          }
+        })
+        .filter((item): item is { id: string; title: string; url: string } => item !== null)
       
       // Menuチェックボックスが付いたページがない場合は空の配列を返す
       if (menuItems.length === 0) {
@@ -79,14 +95,18 @@ export async function getMenuItems() {
       }
       
       return menuItems
-  } catch (error) {
-    console.error('Error fetching menu items from Notion:', error)
-    // エラーのスタックトレースを出力
-    if (error instanceof Error) {
-      console.error('Error stack:', error.stack)
-      console.error('Error message:', error.message)
+    } catch (error) {
+      console.error('Error fetching menu items from Notion:', error)
+      // エラーのスタックトレースを出力
+      if (error instanceof Error) {
+        console.error('Error stack:', error.stack)
+        console.error('Error message:', error.message)
+      }
+      // エラーが発生した場合は空の配列を返す
+      return []
     }
-    // エラーが発生した場合は空の配列を返す
+  } catch (outerError) {
+    console.error('Outer error fetching menu items from Notion:', outerError)
     return []
   }
 }
