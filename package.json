@@ -36,6 +36,7 @@
     "@notionhq/client": "^2.3.0",
     "@react-icons/all-files": "^4.1.0",
     "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "expiry-map": "^2.0.0",
     "fathom-client": "^3.4.1",
     "ky": "^1.7.2",
