@@ -97,6 +97,10 @@ export default async function searchNotionHandler(
               date: publishDate,
               object: 'page',
               properties: properties, // 詳細表示のために全プロパティを渡す
+              parent: result.parent?.type === 'database_id' ? {
+                id: result.parent.database_id,
+                title: 'Database' // データベースからのページ
+              } : undefined,
               isNavigable: true, // notion-typesの互換性のために追加
               score: 0.9, // notion-typesの互換性のために追加
               highlight: {
@@ -121,6 +125,10 @@ export default async function searchNotionHandler(
               },
               object: 'database',
               schema: result.properties as Record<string, any>, // データベースのスキーマ情報
+              parent: result.parent?.type === 'page_id' ? {
+                id: result.parent.page_id,
+                title: 'Page' // ページの中のデータベース
+              } : undefined,
               isNavigable: true,
               score: 0.8,
               highlight: {
@@ -171,6 +179,10 @@ export default async function searchNotionHandler(
               object: 'block',
               type: blockType,
               parentId: result.parent?.page_id || result.parent?.database_id || '',
+              parent: result.parent?.page_id || result.parent?.database_id ? {
+                id: result.parent?.page_id || result.parent?.database_id || '',
+                title: 'Parent Page' // 親ページタイトルのデフォルト値
+              } : undefined,
               isNavigable: true,
               score: 0.7,
               highlight: {
