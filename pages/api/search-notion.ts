@@ -13,8 +13,12 @@ export default async function searchNotionHandler(
     return res.status(405).send({ error: 'method not allowed' })
   }
 
-  const searchParams: types.SearchParams = req.body
+  const searchParams: any = req.body
   const query = searchParams.query || '';
+  // ancestorIdが必須になったため、確実に設定
+  if (!searchParams.ancestorId && api.notionPageId) {
+    searchParams.ancestorId = api.notionPageId
+  }
   const useOfficialApi = req.query.useOfficialApi === 'true';
 
   console.log('<<< lambda search-notion', searchParams, { useOfficialApi })
@@ -199,7 +203,7 @@ export default async function searchNotionHandler(
       };
     } else {
       // 非公式APIを使用した検索（既存の実装）
-      results = await search(searchParams);
+      results = await search(searchParams as types.SearchParams);
     }
     
     console.log('>>> lambda search-notion', results);

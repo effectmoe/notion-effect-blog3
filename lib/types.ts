@@ -88,7 +88,7 @@ export interface NotionPageInfo {
 
 export interface SearchParams {
   query: string
-  ancestorId?: string
+  ancestorId: string
   limit?: number
   userLocale?: string
   useOfficialApi?: boolean
