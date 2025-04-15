@@ -1,0 +1,464 @@
+/* NotionSearch Styles */
+.searchTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.searchTrigger:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  transform: scale(1.05);
+}
+
+.searchOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.searchContainer {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.searchHeader {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  color: #777;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  font-size: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #605dec;
+  box-shadow: 0 0 0 2px rgba(96, 93, 236, 0.2);
+}
+
+.clearButton {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.clearButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.searchActions {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.apiToggle {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.apiToggleText {
+  margin-left: 6px;
+  color: #555;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: #555;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.searchBody {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.searchError {
+  color: #e74c3c;
+  padding: 12px;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.searchLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  gap: 8px;
+}
+
+.loadingDot {
+  width: 8px;
+  height: 8px;
+  background-color: #605dec;
+  border-radius: 50%;
+  animation: loadingDotPulse 1.5s infinite ease-in-out;
+  opacity: 0.6;
+}
+
+.loadingDot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.loadingDot:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes loadingDotPulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.searchResults {
+  margin-top: 8px;
+}
+
+.searchResultsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.searchResultsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.searchResultItem {
+  margin-bottom: 8px;
+}
+
+.searchResultLink {
+  display: flex;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.searchResultLink:hover {
+  background-color: #f0f2f5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.resultTypeIcon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.resultContent {
+  flex: 1;
+  min-width: 0; /* Important for text truncation */
+}
+
+.searchResultTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchResultPreview {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+}
+
+.resultThumbnail {
+  width: 70px;
+  height: 50px;
+  margin-left: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #777;
+}
+
+.resultDate {
+  margin-right: 8px;
+}
+
+.resultType {
+  padding: 2px 6px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.pageResult .resultType {
+  background-color: rgba(96, 93, 236, 0.1);
+  color: #605dec;
+}
+
+.databaseResult .resultType {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+
+.blockResult .resultType {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.searchNoResults {
+  text-align: center;
+  padding: 24px 0;
+  color: #777;
+  font-style: italic;
+}
+
+.searchFooter {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+}
+
+.searchHint {
+  margin: 0;
+}
+
+.keyboardShortcut {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: 0 2px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+  font-family: monospace;
+  color: #555;
+}
+
+/* Dark Mode Styles */
+:global(.dark-mode) .searchContainer {
+  background-color: #212529;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark-mode) .searchHeader,
+:global(.dark-mode) .searchFooter {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark-mode) .searchInput {
+  background-color: #2d3339;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8f9fa;
+}
+
+:global(.dark-mode) .searchInput:focus {
+  border-color: #8b63fe;
+  box-shadow: 0 0 0 2px rgba(139, 99, 254, 0.3);
+}
+
+:global(.dark-mode) .searchIcon,
+:global(.dark-mode) .clearButton {
+  color: #adb5bd;
+}
+
+:global(.dark-mode) .closeButton {
+  color: #adb5bd;
+}
+
+:global(.dark-mode) .closeButton:hover,
+:global(.dark-mode) .clearButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark-mode) .apiToggleText {
+  color: #adb5bd;
+}
+
+:global(.dark-mode) .searchResultsTitle {
+  color: #e9ecef;
+}
+
+:global(.dark-mode) .searchResultLink {
+  background-color: #2d3339;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:global(.dark-mode) .searchResultLink:hover {
+  background-color: #343a40;
+}
+
+:global(.dark-mode) .searchResultTitle {
+  color: #e9ecef;
+}
+
+:global(.dark-mode) .searchResultPreview {
+  color: #adb5bd;
+}
+
+:global(.dark-mode) .resultMeta {
+  color: #868e96;
+}
+
+:global(.dark-mode) .resultType {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark-mode) .keyboardShortcut {
+  background-color: #343a40;
+  border-color: #495057;
+  color: #adb5bd;
+}
+
+:global(.dark-mode) .loadingDot {
+  background-color: #8b63fe;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .searchOverlay {
+    padding-top: 5vh;
+  }
+  
+  .searchContainer {
+    max-width: 90%;
+    max-height: 85vh;
+  }
+  
+  .searchBody {
+    max-height: 65vh;
+  }
+  
+  .searchActions {
+    margin-left: 8px;
+  }
+  
+  .apiToggle {
+    margin-right: 8px;
+  }
+  
+  .apiToggleText {
+    display: none; /* Hide text on small screens */
+  }
+  
+  .searchInput {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchContainer {
+    max-width: 95%;
+  }
+  
+  .searchFooter {
+    display: none; /* Hide keyboard hints on very small screens */
+  }
+  
+  .resultThumbnail {
+    display: none; /* Hide thumbnails on very small screens */
+  }
+}

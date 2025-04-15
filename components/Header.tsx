@@ -13,6 +13,7 @@ import * as config from '@/lib/config'
 import { useDarkMode } from '@/lib/use-dark-mode'
 import styles from './Header.module.css'
 import { notionViews } from '@/lib/notion-views'
+import NotionSearch from './NotionSearch'
 
 // ナビゲーションリンクの型定義
 type MenuItem = {
@@ -198,20 +199,8 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
         </div>
       </div>
 
-      {/* 検索オーバーレイ */}
-      <div className={cs(
-        styles.searchOverlay,
-        isSearchVisible ? styles.searchVisible : styles.searchHidden
-      )}>
-        <div className={styles.searchContainer}>
-          <input 
-            type="text" 
-            className={styles.searchInput} 
-            placeholder="検索..."
-            aria-label="検索"
-          />
-        </div>
-      </div>
+      {/* NotionSearch コンポーネントを使用 */}
+      {isSearchVisible && <NotionSearch />}
 
       {/* モバイルメニュー（常に表示） */}
       <div className={cs(
