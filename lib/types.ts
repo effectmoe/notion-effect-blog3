@@ -110,7 +110,7 @@ export interface SearchResult {
   
   // notion-types の SearchResult に必要なプロパティ
   isNavigable: boolean // オプショナルから必須に変更
-  score?: number
+  score: number // オプショナルから必須に変更
   highlight?: {
     title?: string[]
     text?: string[]
