@@ -176,8 +176,9 @@ export function NotionPage({
   site,
   recordMap,
   error,
-  pageId
-}: types.PageProps) {
+  pageId,
+  menuItems // Notionデータベースからのメニューアイテムを受け取る
+}: types.PageProps & { menuItems?: any[] }) {
   const router = useRouter()
   const lite = useSearchParam('lite')
 
@@ -303,7 +304,7 @@ export function NotionPage({
       <BodyClassName className='no-notion-tabs' />
 
       {/* Notionレンダラー - 内部のヘッダーをnullに設定したので、カスタムヘッダーを外に配置 */}
-      <Header menuItems={navigationMenuItems} />
+      <Header menuItems={menuItems || navigationMenuItems} />
 
       <div className={styles.notionPageContainer}>
         <NotionRenderer
