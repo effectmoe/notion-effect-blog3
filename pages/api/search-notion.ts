@@ -4,6 +4,7 @@ import type * as types from '../../lib/types'
 import { search } from '../../lib/notion'
 import { searchNotion as searchNotionOfficial, parsePageProperties } from '../../lib/notion-official-api'
 import { richTextToPlainText } from '../../lib/notion-utils'
+import * as config from '../../lib/config'
 
 export default async function searchNotionHandler(
   req: NextApiRequest,
@@ -16,8 +17,8 @@ export default async function searchNotionHandler(
   const searchParams: any = req.body
   const query = searchParams.query || '';
   // ancestorIdが必須になったため、確実に設定
-  if (!searchParams.ancestorId && api.notionPageId) {
-    searchParams.ancestorId = api.notionPageId
+  if (!searchParams.ancestorId && config.api.notionPageId) {
+    searchParams.ancestorId = config.api.notionPageId
   }
   const useOfficialApi = req.query.useOfficialApi === 'true';
 
