@@ -1,8 +1,10 @@
 import {
   type ExtendedRecordMap,
-  type SearchParams,
-  type SearchResults
+  type SearchParams as NotionSearchParams,
+  type SearchResults as NotionSearchResults
 } from 'notion-types'
+import * as types from './types'
+import { SearchResult, SearchResults } from './types'
 import { mergeRecordMaps } from 'notion-utils'
 import pMap from 'p-map'
 import pMemoize from 'p-memoize'
@@ -71,7 +73,7 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
   return recordMap
 }
 
-export async function search(params: SearchParams): Promise<SearchResults> {
+export async function search(params: types.SearchParams): Promise<types.SearchResults> {
   // パラメータをログに出力
   console.log('Search function params (original):', JSON.stringify(params, null, 2));
   
@@ -88,7 +90,7 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
-    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults
+    return { results: [], total: 0, recordMap: { block: {} } } as types.SearchResults
   }
   
   // 検索結果の最大数を設定
@@ -99,21 +101,27 @@ export async function search(params: SearchParams): Promise<SearchResults> {
   try {
     // 検索実行
     console.log('Starting Notion search with params:', JSON.stringify(params, null, 2));
-    const results = await notion.search(params);
+    const results = await notion.search(params as NotionSearchParams) as unknown as types.SearchResults;
     console.log(`Notion search complete. Found ${results.results?.length || 0} results for query: ${params.query}`);
     
     // 検索結果のURLを修正（/p/id形式から/id形式に変更）
     if (results && results.results) {
       results.results = results.results.map(result => {
+        // 型アサーションを追加
+        const searchResult = result as SearchResult;
+        
         // URLを生成する際に /p/pageId から /pageId に変更
-        if (result.url && result.url.startsWith('/p/')) {
-          result.url = result.url.replace('/p/', '/');
+        if (searchResult.url && searchResult.url.startsWith('/p/')) {
+          searchResult.url = searchResult.url.replace('/p/', '/');
         }
+        
         // ハイライトのpathTextも修正
-        if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
-          result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+        if (searchResult.highlight && searchResult.highlight.pathText && 
+            searchResult.highlight.pathText.startsWith('/p/')) {
+          searchResult.highlight.pathText = searchResult.highlight.pathText.replace('/p/', '/');
         }
-        return result;
+        
+        return searchResult;
       });
     }
     

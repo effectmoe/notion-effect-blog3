@@ -235,13 +235,16 @@ export default async function searchNotionHandler(
         // 検索結果のURLを修正（/p/id形式から/id形式に変更）
         if (results && results.results) {
           results.results = results.results.map(result => {
-            if (result.url && result.url.startsWith('/p/')) {
-              result.url = result.url.replace('/p/', '/');
+            const typedResult = result as any; // 型アサーションを使用
+            if (typedResult.url && typeof typedResult.url === 'string' && typedResult.url.startsWith('/p/')) {
+              typedResult.url = typedResult.url.replace('/p/', '/');
             }
-            if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
-              result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+            if (typedResult.highlight && typedResult.highlight.pathText && 
+                typeof typedResult.highlight.pathText === 'string' && 
+                typedResult.highlight.pathText.startsWith('/p/')) {
+              typedResult.highlight.pathText = typedResult.highlight.pathText.replace('/p/', '/');
             }
-            return result;
+            return typedResult;
           });
         }
       } catch (searchError) {
@@ -252,13 +255,16 @@ export default async function searchNotionHandler(
         // 手動検索の結果のURLも修正
         if (results && results.results) {
           results.results = results.results.map(result => {
-            if (result.url && result.url.startsWith('/p/')) {
-              result.url = result.url.replace('/p/', '/');
+            const typedResult = result as any; // 型アサーションを使用
+            if (typedResult.url && typeof typedResult.url === 'string' && typedResult.url.startsWith('/p/')) {
+              typedResult.url = typedResult.url.replace('/p/', '/');
             }
-            if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
-              result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+            if (typedResult.highlight && typedResult.highlight.pathText && 
+                typeof typedResult.highlight.pathText === 'string' && 
+                typedResult.highlight.pathText.startsWith('/p/')) {
+              typedResult.highlight.pathText = typedResult.highlight.pathText.replace('/p/', '/');
             }
-            return result;
+            return typedResult;
           });
         }
       }
