@@ -333,8 +333,7 @@ const NotionSearchFixed: React.FC<{
                     href={result.url && typeof result.url === 'string' 
                       ? (result.url.startsWith('/p/') 
                         ? result.url.replace('/p/', '/') 
-                        : (result.url.startsWith('/') ? result.url : `/${result.id}`))
-                    }
+                        : (result.url.startsWith('/') ? result.url : `/${result.id}`))}
                     onClick={handleResultClick}
                     className={cs(styles.searchResultLink, {
                       [styles.pageResult]: result.object === 'page',
