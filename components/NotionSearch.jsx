@@ -265,7 +265,7 @@ export const NotionSearch = () => {
                     {searchResults.map((result) => (
                       <li key={result.id} className={styles.searchResultItem}>
                         <Link
-                          href={result.url}
+                          href={result.url && typeof result.url === 'string' ? result.url.replace('/p/', '/') : '/'}
                           onClick={handleResultClick}
                           className={cs(styles.searchResultLink, {
                             [styles.pageResult]: result.object === 'page',
