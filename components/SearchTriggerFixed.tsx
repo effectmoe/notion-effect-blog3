@@ -31,7 +31,7 @@ const SearchTriggerFixed: React.FC = () => {
 
   // 検索を開く関数
   const openSearch = useCallback(() => {
-    console.log('検索ダイアログを開きます');
+    console.log('検索ダイアログを開きます - SearchTriggerFixed');
     setIsSearchOpen(true);
     // 検索が開いている間はボディのスクロールを禁止
     document.body.style.overflow = 'hidden';

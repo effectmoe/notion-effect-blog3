@@ -23,7 +23,11 @@ async function searchNotionImpl(
   // 複数のポイントでエラーの可能性を回避するために型アサーションを使用
   const searchParams = params as any;
   
-  return fetch(api.searchNotion, {
+  // 修正したAPIエンドポイントを使用
+  const endpoint = api.mcpSearchFix || api.searchNotion;
+  console.log('使用するAPIエンドポイント:', endpoint);
+  
+  return fetch(endpoint, {
     method: 'POST',
     body: JSON.stringify(searchParams),
     headers: {

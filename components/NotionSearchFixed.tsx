@@ -53,6 +53,7 @@ const NotionSearchFixed: React.FC<{
       const searchEndpoint = '/api/mcp-search-fix';
       
       console.log(`検索実行: "${searchQuery}" (モード: ${searchMode})`);
+      console.log('エンドポイント:', searchEndpoint);
       
       // 検索リクエストの実行
       const response = await fetch(searchEndpoint, {
