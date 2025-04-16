@@ -1,7 +1,8 @@
 import {
   type ExtendedRecordMap,
   type SearchParams as NotionSearchParams,
-  type SearchResults as NotionSearchResults
+  type SearchResults as NotionSearchResults,
+  type SearchResult as NotionSearchResult
 } from 'notion-types'
 import * as types from './types'
 import { SearchResult, SearchResults } from './types'
@@ -107,16 +108,17 @@ export async function search(params: types.SearchParams): Promise<types.SearchRe
     // 検索結果のURLを修正（/p/id形式から/id形式に変更）
     if (results && results.results) {
       results.results = results.results.map(result => {
-        // 型アサーションを追加
-        const searchResult = result as SearchResult;
+        // 型アサーションを追加して any 型に一時的に変換
+        const searchResult = result as any;
         
         // URLを生成する際に /p/pageId から /pageId に変更
-        if (searchResult.url && searchResult.url.startsWith('/p/')) {
+        if (searchResult.url && typeof searchResult.url === 'string' && searchResult.url.startsWith('/p/')) {
           searchResult.url = searchResult.url.replace('/p/', '/');
         }
         
         // ハイライトのpathTextも修正
         if (searchResult.highlight && searchResult.highlight.pathText && 
+            typeof searchResult.highlight.pathText === 'string' &&
             searchResult.highlight.pathText.startsWith('/p/')) {
           searchResult.highlight.pathText = searchResult.highlight.pathText.replace('/p/', '/');
         }
