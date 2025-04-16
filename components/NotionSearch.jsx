@@ -9,22 +9,114 @@ import cs from 'classnames';
 import * as config from '@/lib/config';
 import styles from './NotionSearch.module.css';
 
-// 検索ワードをハイライトする関数
-const highlightSearchQuery = (text, query) => {
+// 検索クエリをハイライト表示する関数
+const highlightText = (text, query) => {
   if (!query || !text) return text;
   
-  // 検索ワードをエスケープして正規表現で使えるようにする
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  try {
+    // 検索ワードをエスケープして正規表現で使用可能にする
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+    
+    // テキストを分割してハイライト
+    const parts = text.split(regex);
+    return parts.map((part, i) => 
+      regex.test(part) ? <mark key={i}>{part}</mark> : part
+    );
+  } catch (e) {
+    // エラー時は元のテキストを返す
+    return text;
+  }
+};
+
+// タイトル表示を改善する関数
+const getDisplayTitle = (result, searchQuery) => {
+  // 実際のタイトルがある場合はそれを使用
+  if (result.title && typeof result.title === 'string' && result.title.trim() && 
+      !result.title.startsWith('ページ ')) {
+    // 検索クエリに一致する部分をハイライト
+    return highlightText(result.title, searchQuery);
+  }
   
-  // 正規表現を作成（大文字小文字を区別しない）
-  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  // タイトルがない場合、プレビューテキストから生成
+  if (result.preview && result.preview.text) {
+    // プレビューテキストの最初の部分をタイトルとして使用
+    const previewText = result.preview.text;
+    const endIndex = Math.min(
+      previewText.indexOf('.') > 0 ? previewText.indexOf('.') : 50,
+      50
+    );
+    const titleFromPreview = previewText.substring(0, endIndex) + (previewText.length > endIndex ? '...' : '');
+    return titleFromPreview.length > 10 ? highlightText(titleFromPreview, searchQuery) : getDefaultTitle(result);
+  }
   
-  // テキストを分割してハイライト用のマークを追加
-  const parts = text.split(regex);
+  // それ以外の場合はデフォルトタイトル
+  return getDefaultTitle(result);
+};
+
+// デフォルトのタイトルを生成
+const getDefaultTitle = (result) => {
+  switch(result.object) {
+    case 'page':
+      return '無題のページ';
+    case 'database':
+      return 'データベース';
+    case 'block':
+      return result.type === 'image' ? '画像' : 
+             result.type === 'code' ? 'コードブロック' :
+             result.type === 'heading_1' ? '見出し' :
+             'コンテンツ';
+    default:
+      return 'Notionコンテンツ';
+  }
+};
+
+// プレビューテキストを表示
+const getPreviewText = (result, searchQuery) => {
+  if (!result.preview || !result.preview.text) return null;
   
-  return parts.map((part, i) => 
-    regex.test(part) ? <mark key={i}>{part}</mark> : part
+  return (
+    <p className={styles.searchResultPreview}>
+      {highlightText(result.preview.text, searchQuery)}
+    </p>
   );
+};
+
+// 結果タイプのラベルを取得
+const getResultTypeLabel = (result) => {
+  switch(result.object) {
+    case 'page':
+      return 'ページ';
+    case 'database':
+      return 'データベース';
+    case 'block':
+      if (result.type === 'image') return '画像';
+      if (result.type === 'code') return 'コード';
+      if (result.type && result.type.startsWith('heading')) return '見出し';
+      return `ブロック${result.type ? ` (${result.type})` : ''}`;
+    default:
+      return 'コンテンツ';
+  }
+};
+
+// 日付を読みやすい形式に変換
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  
+  try {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return '今日';
+    if (diffDays === 1) return '昨日';
+    if (diffDays < 7) return `${diffDays}日前`;
+    
+    // それ以外は日付表示
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+  } catch (e) {
+    return dateStr;
+  }
 };
 
 // SearchNotion関数を直接インポートするのではなく、ラッパーを作成

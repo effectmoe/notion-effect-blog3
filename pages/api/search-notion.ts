@@ -20,7 +20,8 @@ export default async function searchNotionHandler(
   if (!searchParams.ancestorId && config.api.notionPageId) {
     searchParams.ancestorId = config.api.notionPageId
   }
-  const useOfficialApi = req.query.useOfficialApi === 'true';
+  // 検索モードに基づいてAPI選択（リクエストボディからも受け取れるように）
+  const useOfficialApi = req.query.useOfficialApi === 'true' || searchParams.useOfficialApi === true;
 
   console.log('<<< lambda search-notion', searchParams, { useOfficialApi })
   

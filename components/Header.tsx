@@ -13,7 +13,7 @@ import * as config from '@/lib/config'
 import { useDarkMode } from '@/lib/use-dark-mode'
 import styles from './Header.module.css'
 import { notionViews } from '@/lib/notion-views'
-import NotionSearch from './NotionSearch'
+import SearchTrigger from './SearchTrigger'
 
 // ナビゲーションリンクの型定義
 type MenuItem = {
@@ -138,14 +138,10 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
-          {/* 検索ボタン */}
-          <button 
-            className={styles.iconButton} 
-            onClick={toggleSearch}
-            aria-label={isSearchVisible ? '検索を閉じる' : '検索を開く'}
-          >
-            <IoSearchOutline size={22} />
-          </button>
+          {/* 検索トリガー */}
+          <div className={styles.searchTriggerContainer}>
+            <SearchTrigger />
+          </div>
 
           {/* ダークモード切り替えボタン */}
           {hasMounted && (
@@ -199,8 +195,7 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
         </div>
       </div>
 
-      {/* NotionSearch コンポーネントを使用 */}
-      {isSearchVisible && <NotionSearch />}
+      {/* 検索コンポーネントはSearchTriggerに移動しました */}
 
       {/* モバイルメニュー（常に表示） */}
       <div className={cs(

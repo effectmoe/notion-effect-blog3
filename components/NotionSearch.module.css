@@ -1,208 +1,155 @@
-/* NotionSearch Styles */
-.searchTrigger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
-  border-radius: 50%;
-  color: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.searchTrigger:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-  transform: scale(1.05);
-}
-
-.searchOverlay {
+.searchContainer {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 10000;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 10vh;
-}
-
-.searchContainer {
-  width: 100%;
-  max-width: 600px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.98);
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  max-height: 80vh;
+  overflow: hidden;
 }
 
 .searchHeader {
-  padding: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .searchInputWrapper {
-  display: flex;
-  align-items: center;
-  flex: 1;
   position: relative;
+  flex: 1;
+  max-width: 700px;
+  margin-right: 20px;
 }
 
 .searchIcon {
   position: absolute;
-  left: 10px;
-  color: #777;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
 }
 
 .searchInput {
   width: 100%;
-  padding: 8px 12px 8px 36px;
-  font-size: 16px;
+  padding: 12px 12px 12px 40px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s;
 }
 
 .searchInput:focus {
-  outline: none;
   border-color: #605dec;
   box-shadow: 0 0 0 2px rgba(96, 93, 236, 0.2);
 }
 
 .clearButton {
   position: absolute;
-  right: 10px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
-  color: #777;
+  color: #999;
   cursor: pointer;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
   border-radius: 50%;
 }
 
 .clearButton:hover {
+  color: #666;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
 .searchActions {
   display: flex;
   align-items: center;
-  margin-left: 16px;
 }
 
-.apiToggle {
-  display: flex;
-  align-items: center;
-  margin-right: 16px;
+/* 検索モード選択 */
+.searchModeSelect {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
   cursor: pointer;
-  font-size: 14px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+  margin-right: 12px;
 }
 
-.apiToggleText {
-  margin-left: 6px;
-  color: #555;
-}
-
-.apiToggleHelp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 4px;
-  font-size: 14px;
-  cursor: help;
+.searchModeSelect:focus {
+  outline: none;
+  border-color: #605dec;
+  box-shadow: 0 0 0 2px rgba(96, 93, 236, 0.2);
 }
 
 .closeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: none;
-  border: none;
   border-radius: 50%;
-  color: #555;
-  cursor: pointer;
 }
 
 .closeButton:hover {
+  color: #333;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.searchBody {
-  padding: 16px;
+.searchResults {
+  flex: 1;
   overflow-y: auto;
-  max-height: 60vh;
+  padding: 20px;
 }
 
-.searchError {
-  color: #e74c3c;
-  padding: 12px;
-  background-color: rgba(231, 76, 60, 0.1);
-  border-radius: 6px;
-  margin-bottom: 16px;
-}
-
-.searchLoading {
+.loadingState,
+.errorState,
+.emptyState {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 0;
-  gap: 8px;
+  padding: 40px;
+  text-align: center;
+  color: #666;
 }
 
-.loadingDot {
-  width: 8px;
-  height: 8px;
-  background-color: #605dec;
-  border-radius: 50%;
-  animation: loadingDotPulse 1.5s infinite ease-in-out;
-  opacity: 0.6;
-}
-
-.loadingDot:nth-child(2) {
-  animation-delay: 0.3s;
-}
-
-.loadingDot:nth-child(3) {
-  animation-delay: 0.6s;
-}
-
-@keyframes loadingDotPulse {
-  0%, 100% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-.searchResults {
-  margin-top: 8px;
-}
-
-.searchResultsTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
+.spinner {
+  width: 30px;
+  height: 30px;
   margin-bottom: 12px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #605dec;
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.resultsCount {
+  margin-bottom: 16px;
+  font-weight: 500;
+  color: #666;
 }
 
 .searchResultsList {
@@ -211,88 +158,94 @@
   margin: 0;
 }
 
-.searchResultItem {
-  margin-bottom: 8px;
-}
-
+/* 検索結果のデザインを改善 */
 .searchResultLink {
   display: flex;
-  padding: 12px;
+  padding: 16px;
   background-color: #f8f9fa;
-  border-radius: 6px;
+  border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.2s;
   text-decoration: none;
   color: inherit;
+  margin-bottom: 12px;
 }
 
 .searchResultLink:hover {
   background-color: #f0f2f5;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .resultTypeIcon {
-  margin-right: 12px;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  margin-right: 16px;
+  flex-shrink: 0;
 }
 
 .resultContent {
   flex: 1;
-  min-width: 0; /* Important for text truncation */
+  min-width: 0; /* 必要なフレックスボックスの子要素が正しく縮小するため */
 }
 
+/* 検索結果タイトルを目立たせる */
 .searchResultTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.parentInfo {
-  margin-bottom: 4px;
-}
-
-.parentTitle {
-  font-size: 12px;
-  color: #777;
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-}
-
 .searchResultPreview {
+  margin: 0 0 8px;
   font-size: 14px;
-  color: #555;
-  margin: 0;
+  color: #666;
   overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-.searchResultPreview mark {
-  background-color: rgba(255, 230, 0, 0.3);
+/* ハイライト表示を強調 */
+.searchResultPreview mark,
+.searchResultTitle mark {
+  background-color: rgba(255, 196, 0, 0.4);
   padding: 0 2px;
   border-radius: 2px;
   font-weight: 500;
+  box-shadow: 0 0 0 1px rgba(255, 196, 0, 0.2);
+}
+
+.resultMeta {
+  display: flex;
+  font-size: 12px;
+  color: #888;
+}
+
+.resultDate {
+  margin-right: 8px;
+}
+
+.resultDate:after {
+  content: "・";
+  margin-left: 8px;
 }
 
 .resultThumbnail {
-  width: 70px;
-  height: 50px;
-  margin-left: 8px;
+  width: 80px;
+  height: 80px;
+  margin-left: 16px;
+  border-radius: 6px;
   overflow: hidden;
-  border-radius: 4px;
   flex-shrink: 0;
 }
 
@@ -302,79 +255,52 @@
   object-fit: cover;
 }
 
-.resultMeta {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #777;
+/* デバイス別スタイル */
+@media only screen and (max-width: 767px) {
+  .searchHeader {
+    padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchInputWrapper {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .searchActions {
+    justify-content: space-between;
+  }
+  
+  .searchResults {
+    padding: 12px;
+  }
+  
+  .resultThumbnail {
+    width: 60px;
+    height: 60px;
+  }
 }
 
-.resultDate {
-  margin-right: 8px;
+/* ページ型とブロック型の結果にやや異なるスタイルを適用 */
+.pageResult {
+  border-left: 3px solid #605dec;
 }
 
-.resultType {
-  padding: 2px 6px;
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-  text-transform: capitalize;
+.databaseResult {
+  border-left: 3px solid #22a699;
 }
 
-.pageResult .resultType {
-  background-color: rgba(96, 93, 236, 0.1);
-  color: #605dec;
-}
-
-.databaseResult .resultType {
-  background-color: rgba(46, 204, 113, 0.1);
-  color: #2ecc71;
-}
-
-.blockResult .resultType {
-  background-color: rgba(52, 152, 219, 0.1);
-  color: #3498db;
-}
-
-.searchNoResults {
-  text-align: center;
-  padding: 24px 0;
-  color: #777;
-  font-style: italic;
-}
-
-.searchFooter {
-  padding: 12px 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  font-size: 13px;
-  color: #777;
-  text-align: center;
-}
-
-.searchHint {
-  margin: 0;
-}
-
-.keyboardShortcut {
-  display: inline-block;
-  padding: 1px 5px;
-  margin: 0 2px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  font-size: 12px;
-  font-family: monospace;
-  color: #555;
+.blockResult {
+  border-left: 3px solid #f0b86e;
 }
 
 /* Dark Mode Styles */
 :global(.dark-mode) .searchContainer {
-  background-color: #212529;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(33, 37, 41, 0.98);
 }
 
-:global(.dark-mode) .searchHeader,
-:global(.dark-mode) .searchFooter {
+:global(.dark-mode) .searchHeader {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -403,17 +329,10 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-:global(.dark-mode) .apiToggleText {
-  color: #adb5bd;
-}
-
-:global(.dark-mode) .parentTitle {
-  color: #adb5bd;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-:global(.dark-mode) .searchResultsTitle {
-  color: #e9ecef;
+:global(.dark-mode) .searchModeSelect {
+  background-color: #2d3339;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8f9fa;
 }
 
 :global(.dark-mode) .searchResultLink {
@@ -437,62 +356,9 @@
   color: #868e96;
 }
 
-:global(.dark-mode) .resultType {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-:global(.dark-mode) .keyboardShortcut {
-  background-color: #343a40;
-  border-color: #495057;
-  color: #adb5bd;
-}
-
-:global(.dark-mode) .loadingDot {
-  background-color: #8b63fe;
-}
-
-/* Mobile styles */
-@media (max-width: 768px) {
-  .searchOverlay {
-    padding-top: 5vh;
-  }
-  
-  .searchContainer {
-    max-width: 90%;
-    max-height: 85vh;
-  }
-  
-  .searchBody {
-    max-height: 65vh;
-  }
-  
-  .searchActions {
-    margin-left: 8px;
-  }
-  
-  .apiToggle {
-    margin-right: 8px;
-  }
-  
-  .apiToggleText {
-    display: none; /* Hide text on small screens */
-  }
-  
-  .searchInput {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .searchContainer {
-    max-width: 95%;
-  }
-  
-  .searchFooter {
-    display: none; /* Hide keyboard hints on very small screens */
-  }
-  
-  .resultThumbnail {
-    display: none; /* Hide thumbnails on very small screens */
-  }
+:global(.dark-mode) .searchResultTitle mark,
+:global(.dark-mode) .searchResultPreview mark {
+  background-color: rgba(255, 196, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 196, 0, 0.2);
+  color: #f8f9fa;
 }
