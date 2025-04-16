@@ -13,7 +13,8 @@ import * as config from '@/lib/config'
 import { useDarkMode } from '@/lib/use-dark-mode'
 import styles from './Header.module.css'
 import { notionViews } from '@/lib/notion-views'
-import SearchTrigger from './SearchTrigger'
+// 修正した検索トリガーコンポーネントをインポート
+import SearchTriggerFixed from './SearchTriggerFixed'
 
 // ナビゲーションリンクの型定義
 type MenuItem = {
@@ -117,16 +118,16 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           <Logo />
         </div>
 
-        {/* デスクトップ用ナビゲーション - メニュー項目はハンバーガーメニューにのみ表示 */}
+        {/* デスクトップ用ナビゲーション */}
         <div className={styles.desktopNav}>
           {/* ここは空にして、メニュー項目はハンバーガーメニューにのみ表示する */}
         </div>
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
-          {/* 検索トリガー */}
+          {/* 修正した検索トリガー */}
           <div className={styles.searchTriggerContainer}>
-            <SearchTrigger />
+            <SearchTriggerFixed />
           </div>
 
           {/* ダークモード切り替えボタン */}
@@ -180,8 +181,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           </button>
         </div>
       </div>
-
-      {/* 検索コンポーネントはSearchTriggerに移動しました */}
 
       {/* モバイルメニュー（常に表示） */}
       <div className={cs(

@@ -20,8 +20,18 @@
   font-size: 14px;
 }
 
+.searchShortcut {
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+  padding: 2px 5px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
 @media only screen and (max-width: 767px) {
-  .searchLabel {
+  .searchLabel,
+  .searchShortcut {
     display: none;
   }
   
@@ -39,4 +49,8 @@
 :global(.dark-mode) .searchTrigger:hover {
   background-color: rgba(255, 255, 255, 0.05);
   color: #f8f9fa;
+}
+
+:global(.dark-mode) .searchShortcut {
+  background: rgba(255, 255, 255, 0.1);
 }

@@ -146,6 +146,42 @@
   to { transform: rotate(360deg); }
 }
 
+/* 再試行ボタン */
+.retryButton {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #605dec;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+  background-color: #4842b7;
+}
+
+/* 検索のヒント */
+.searchTipsText {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.searchTips {
+  list-style: disc;
+  text-align: left;
+  padding-left: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.searchTips li {
+  margin-bottom: 5px;
+}
+
 .resultsCount {
   margin-bottom: 16px;
   font-weight: 500;
@@ -354,6 +390,14 @@
 
 :global(.dark-mode) .resultMeta {
   color: #868e96;
+}
+
+:global(.dark-mode) .retryButton {
+  background-color: #8b63fe;
+}
+
+:global(.dark-mode) .retryButton:hover {
+  background-color: #7452d9;
 }
 
 :global(.dark-mode) .searchResultTitle mark,
