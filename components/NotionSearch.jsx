@@ -265,7 +265,11 @@ export const NotionSearch = () => {
                     {searchResults.map((result) => (
                       <li key={result.id} className={styles.searchResultItem}>
                         <Link
-                          href={result.url && typeof result.url === 'string' ? result.url.replace('/p/', '/') : '/'}
+                          href={result.url && typeof result.url === 'string' 
+                            ? (result.url.startsWith('/p/') 
+                               ? result.url.replace('/p/', '/') 
+                               : (result.url.startsWith('/') ? result.url : `/${result.id}`))
+                            : `/${result.id || ''}`}
                           onClick={handleResultClick}
                           className={cs(styles.searchResultLink, {
                             [styles.pageResult]: result.object === 'page',
@@ -290,7 +294,7 @@ export const NotionSearch = () => {
                           
                           <div className={styles.resultContent}>
                             <h4 className={styles.searchResultTitle}>
-                              {result.title || '無題'}
+                              {result.title || (result.id ? `ページ ${result.id.substring(0, 8)}...` : '無題')}
                             </h4>
                             
                             {/* 親ページ情報の表示 */}

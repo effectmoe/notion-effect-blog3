@@ -232,18 +232,28 @@ export default async function searchNotionHandler(
           results = await searchManually(searchParams.query);
         }
         
-        // 検索結果のURLを修正（/p/id形式から/id形式に変更）
+        // 検索結果のURLと表示名を修正
         if (results && results.results) {
           results.results = results.results.map(result => {
             const typedResult = result as any; // 型アサーションを使用
+            
+            // URLパスの修正（/p/id形式から/id形式に変更）
             if (typedResult.url && typeof typedResult.url === 'string' && typedResult.url.startsWith('/p/')) {
               typedResult.url = typedResult.url.replace('/p/', '/');
             }
+            
+            // ハイライトパスの修正
             if (typedResult.highlight && typedResult.highlight.pathText && 
                 typeof typedResult.highlight.pathText === 'string' && 
                 typedResult.highlight.pathText.startsWith('/p/')) {
               typedResult.highlight.pathText = typedResult.highlight.pathText.replace('/p/', '/');
             }
+            
+            // タイトルが設定されていない場合はIDの一部を表示
+            if (!typedResult.title && typedResult.id) {
+              typedResult.title = `ページ ${typedResult.id.substring(0, 8)}...`;
+            }
+            
             return typedResult;
           });
         }
@@ -252,18 +262,28 @@ export default async function searchNotionHandler(
         // 標準の検索が失敗した場合、手動検索で再試行
         results = await searchManually(searchParams.query);
         
-        // 手動検索の結果のURLも修正
+        // 手動検索の結果のURLと表示名も修正
         if (results && results.results) {
           results.results = results.results.map(result => {
             const typedResult = result as any; // 型アサーションを使用
+            
+            // URLパスの修正（/p/id形式から/id形式に変更）
             if (typedResult.url && typeof typedResult.url === 'string' && typedResult.url.startsWith('/p/')) {
               typedResult.url = typedResult.url.replace('/p/', '/');
             }
+            
+            // ハイライトパスの修正
             if (typedResult.highlight && typedResult.highlight.pathText && 
                 typeof typedResult.highlight.pathText === 'string' && 
                 typedResult.highlight.pathText.startsWith('/p/')) {
               typedResult.highlight.pathText = typedResult.highlight.pathText.replace('/p/', '/');
             }
+            
+            // タイトルが設定されていない場合はIDの一部を表示
+            if (!typedResult.title && typedResult.id) {
+              typedResult.title = `ページ ${typedResult.id.substring(0, 8)}...`;
+            }
+            
             return typedResult;
           });
         }

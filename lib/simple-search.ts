@@ -47,10 +47,15 @@ export async function simpleSearch(query: string): Promise<SearchResults> {
           // テキストが検索クエリを含む場合、結果に追加
           if (blockText.toLowerCase().includes(searchLowerCase)) {
             console.log(`Match found in block ${id}: "${blockText.substring(0, 50)}..."`)
+            // タイトルが空の場合は「無題のページ」としない
+            const title = blockText.trim() ? 
+              blockText.substring(0, 80) + (blockText.length > 80 ? '...' : '') : 
+              'ページ ' + id.substring(0, 8);
+              
             results.push({
               id,
-              title: blockText.substring(0, 80) + (blockText.length > 80 ? '...' : ''),
-              url: `/p/${id}`,
+              title: title,
+              url: `/${id}`, // /p/ プレフィックスを削除
               preview: {
                 text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
               },
@@ -58,7 +63,7 @@ export async function simpleSearch(query: string): Promise<SearchResults> {
               isNavigable: true,
               score: 1.0,
               highlight: {
-                pathText: `/p/${id}`,
+                pathText: `/${id}`, // ここも /p/ プレフィックスを削除
                 text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
               }
             })
@@ -86,10 +91,15 @@ export async function simpleSearch(query: string): Promise<SearchResults> {
         }
         
         if (collectionText.toLowerCase().includes(searchLowerCase)) {
+          // タイトルが空の場合は「無題のページ」としない
+          const title = collectionText.trim() ? 
+            collectionText : 
+            'データベース ' + id.substring(0, 8);
+            
           results.push({
             id,
-            title: collectionText,
-            url: `/p/${id}`,
+            title: title,
+            url: `/${id}`, // /p/ プレフィックスを削除
             preview: {
               text: `データベース: ${collectionText}`
             },
@@ -97,7 +107,7 @@ export async function simpleSearch(query: string): Promise<SearchResults> {
             isNavigable: true,
             score: 0.8,
             highlight: {
-              pathText: `/p/${id}`,
+              pathText: `/${id}`, // ここも /p/ プレフィックスを削除
               text: `データベース: ${collectionText}`
             }
           })
