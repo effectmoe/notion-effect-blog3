@@ -48,6 +48,7 @@ body {
   display: flex;
   align-items: center;
   height: 40px;
+  z-index: 100; /* カスタムヘッダーより下の値を設定 */
 }
 
 /* 検索ボタンの修正 - テキストを非表示にする */
@@ -272,6 +273,13 @@ body .notion-timeline-view-header,
 /* Notionのトップバーを完全に非表示 */
 .notion-topbar {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  z-index: -1 !important;
 }
 
 /* すべてのNotionタブを非表示にするための特別なルール */
