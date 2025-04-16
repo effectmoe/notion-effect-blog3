@@ -102,6 +102,21 @@ export async function search(params: SearchParams): Promise<SearchResults> {
     const results = await notion.search(params);
     console.log(`Notion search complete. Found ${results.results?.length || 0} results for query: ${params.query}`);
     
+    // 検索結果のURLを修正（/p/id形式から/id形式に変更）
+    if (results && results.results) {
+      results.results = results.results.map(result => {
+        // URLを生成する際に /p/pageId から /pageId に変更
+        if (result.url && result.url.startsWith('/p/')) {
+          result.url = result.url.replace('/p/', '/');
+        }
+        // ハイライトのpathTextも修正
+        if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
+          result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+        }
+        return result;
+      });
+    }
+    
     // 検索結果の詳細をログに出力
     if (results.results?.length > 0) {
       console.log('Search results sample:', JSON.stringify(results.results[0], null, 2));
@@ -204,7 +219,7 @@ export async function searchManually(query: string): Promise<SearchResults> {
           results.push({
             id,
             title: blockTitle || '無題',
-            url: `/p/${id}`,
+            url: `/${id}`,  // /p/プレフィックスを削除
             preview: {
               text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
             },
@@ -244,7 +259,7 @@ export async function searchManually(query: string): Promise<SearchResults> {
           results.push({
             id: collectionId,
             title: collectionName,
-            url: `/p/${collectionId}`,
+            url: `/${collectionId}`,  // /p/プレフィックスを削除
             preview: {
               text: `データベース: ${collectionName}`
             },

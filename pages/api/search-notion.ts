@@ -89,7 +89,7 @@ export default async function searchNotionHandler(
             return {
               id: result.id,
               title,
-              url: `/p/${result.id}`, // サイト内URLに変換
+              url: `/${result.id}`, // サイト内URLに変換（/p/プレフィックスを削除）
               preview: {
                 text: previewText,
               },
@@ -104,7 +104,7 @@ export default async function searchNotionHandler(
               isNavigable: true, // notion-typesの互換性のために追加
               score: 0.9, // notion-typesの互換性のために追加
               highlight: {
-                pathText: `/p/${result.id}`,
+                pathText: `/${result.id}`,
                 text: previewText || 'No preview available'
               }
             };
@@ -119,7 +119,7 @@ export default async function searchNotionHandler(
             return {
               id: result.id,
               title,
-              url: `/p/${result.id}`, // サイト内URLに変換
+              url: `/${result.id}`, // サイト内URLに変換（/p/プレフィックスを削除）
               preview: {
                 text: `データベース: ${title}`,
               },
@@ -132,7 +132,7 @@ export default async function searchNotionHandler(
               isNavigable: true,
               score: 0.8,
               highlight: {
-                pathText: `/p/${result.id}`,
+                pathText: `/${result.id}`,
                 text: `データベース: ${title}`
               }
             };
@@ -175,7 +175,7 @@ export default async function searchNotionHandler(
             return {
               id: result.id,
               title: blockTitle,
-              url: parentId ? `/p/${parentId}` : `/p/${result.id}`, // 親ページのURLに変換
+              url: parentId ? `/${parentId}` : `/${result.id}`, // 親ページのURLに変換（/p/プレフィックスを削除）
               preview: {
                 text: text || `${blockTypeDisplay}`,
               },
@@ -189,7 +189,7 @@ export default async function searchNotionHandler(
               isNavigable: true,
               score: 0.7,
               highlight: {
-                pathText: parentId ? `/p/${parentId}` : `/p/${result.id}`,
+                pathText: parentId ? `/${parentId}` : `/${result.id}`,
                 text: text || `${blockTypeDisplay}`
               }
             };
@@ -199,7 +199,7 @@ export default async function searchNotionHandler(
           return {
             id: result.id,
             title: result.object || 'Notion Item',
-            url: `/p/${result.id}`, // サイト内URLに変換
+            url: `/${result.id}`, // サイト内URLに変換（/p/プレフィックスを削除）
             preview: {
               text: `${result.object || 'item'}`,
             },
@@ -207,7 +207,7 @@ export default async function searchNotionHandler(
             isNavigable: true,
             score: 0.5,
             highlight: {
-              pathText: `/p/${result.id}`,
+              pathText: `/${result.id}`,
               text: `${result.object || 'item'}`
             }
           };
@@ -231,10 +231,36 @@ export default async function searchNotionHandler(
           console.log('No results from standard search, falling back to manual search...');
           results = await searchManually(searchParams.query);
         }
+        
+        // 検索結果のURLを修正（/p/id形式から/id形式に変更）
+        if (results && results.results) {
+          results.results = results.results.map(result => {
+            if (result.url && result.url.startsWith('/p/')) {
+              result.url = result.url.replace('/p/', '/');
+            }
+            if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
+              result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+            }
+            return result;
+          });
+        }
       } catch (searchError) {
         console.error('Standard search failed, trying manual search...', searchError);
         // 標準の検索が失敗した場合、手動検索で再試行
         results = await searchManually(searchParams.query);
+        
+        // 手動検索の結果のURLも修正
+        if (results && results.results) {
+          results.results = results.results.map(result => {
+            if (result.url && result.url.startsWith('/p/')) {
+              result.url = result.url.replace('/p/', '/');
+            }
+            if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
+              result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+            }
+            return result;
+          });
+        }
       }
     }
     

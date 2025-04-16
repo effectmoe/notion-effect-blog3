@@ -45,6 +45,20 @@ async function searchNotionImpl(
     .then((results) => {
       // 結果のロギング
       console.log(`Client received ${results.results?.length || 0} results for query: ${params.query}`)
+      
+      // 検索結果のURLを修正（/p/id形式から/id形式に変更）
+      if (results && results.results) {
+        results.results = results.results.map(result => {
+          if (result.url && result.url.startsWith('/p/')) {
+            result.url = result.url.replace('/p/', '/');
+          }
+          if (result.highlight && result.highlight.pathText && result.highlight.pathText.startsWith('/p/')) {
+            result.highlight.pathText = result.highlight.pathText.replace('/p/', '/');
+          }
+          return result;
+        });
+      }
+      
       return results
     })
     .catch((err) => {
