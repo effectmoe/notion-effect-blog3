@@ -9,6 +9,24 @@ import cs from 'classnames';
 import * as config from '@/lib/config';
 import styles from './NotionSearch.module.css';
 
+// 検索ワードをハイライトする関数
+const highlightSearchQuery = (text, query) => {
+  if (!query || !text) return text;
+  
+  // 検索ワードをエスケープして正規表現で使えるようにする
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
+  // 正規表現を作成（大文字小文字を区別しない）
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  
+  // テキストを分割してハイライト用のマークを追加
+  const parts = text.split(regex);
+  
+  return parts.map((part, i) => 
+    regex.test(part) ? <mark key={i}>{part}</mark> : part
+  );
+};
+
 // SearchNotion関数を直接インポートするのではなく、ラッパーを作成
 const searchNotion = async (params) => {
   // APIエンドポイントを使って検索を実行
@@ -221,7 +239,7 @@ export const NotionSearch = () => {
               </div>
               
               <div className={styles.searchActions}>
-                <label className={styles.apiToggle}>
+                <label className={styles.apiToggle} title="Notion公式APIを使用して検索精度を向上（APIキーが設定されている場合）">
                   <input
                     type="checkbox"
                     checked={useOfficialApi}
@@ -229,6 +247,9 @@ export const NotionSearch = () => {
                   />
                   <span className={styles.apiToggleText}>
                     公式API使用
+                  </span>
+                  <span className={styles.apiToggleHelp} title="Notion公式APIを使用して検索精度を向上（APIキーが設定されている場合）">
+                    ℹ️
                   </span>
                 </label>
                 
@@ -294,7 +315,14 @@ export const NotionSearch = () => {
                           
                           <div className={styles.resultContent}>
                             <h4 className={styles.searchResultTitle}>
-                              {result.title || (result.id ? `ページ ${result.id.substring(0, 8)}...` : '無題')}
+                              {result.title && !result.title.startsWith('ページ ') 
+                                ? result.title 
+                                : (result.preview && result.preview.text 
+                                  ? result.preview.text.substring(0, 50) + (result.preview.text.length > 50 ? '...' : '')
+                                  : (result.object === 'page' ? '無題のページ' : 
+                                     result.object === 'database' ? 'データベース' : 
+                                     result.object === 'block' ? 'ブロック内容' : 'Notionコンテンツ')
+                                )}
                             </h4>
                             
                             {/* 親ページ情報の表示 */}
@@ -307,7 +335,9 @@ export const NotionSearch = () => {
                             {/* プレビューテキスト */}
                             {result.preview && result.preview.text && (
                               <p className={styles.searchResultPreview}>
-                                {result.preview.text || 'プレビューなし'}
+                                {searchQuery && typeof result.preview.text === 'string' 
+                                  ? highlightSearchQuery(result.preview.text, searchQuery)
+                                  : (result.preview.text || 'プレビューなし')}
                               </p>
                             )}
                             
