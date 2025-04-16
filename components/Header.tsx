@@ -40,7 +40,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   const { isDarkMode, toggleDarkMode } = useDarkMode()
   const [hasMounted, setHasMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [isSearchVisible, setIsSearchVisible] = useState(false)
 
   // マウント状態の確認
   useEffect(() => {
@@ -89,19 +88,6 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   // メニューの開閉を切り替える
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
-    // メニューを開くときは検索を閉じる
-    if (!menuOpen) {
-      setIsSearchVisible(false)
-    }
-  }
-
-  // 検索の表示/非表示を切り替える
-  const toggleSearch = () => {
-    setIsSearchVisible(!isSearchVisible)
-    // 検索を開くときはメニューを閉じる
-    if (!isSearchVisible) {
-      setMenuOpen(false)
-    }
   }
 
   // メニュー項目をクリックした時の処理

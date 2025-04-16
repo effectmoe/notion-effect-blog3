@@ -4,7 +4,7 @@ import cs from 'classnames';
 import { FiSearch } from 'react-icons/fi';
 import { FaTimes } from 'react-icons/fa';
 import styles from './NotionSearch.module.css';
-import { config } from '../lib/config';
+import * as config from '../lib/config';
 
 // 検索結果の型定義
 interface SearchResult {
@@ -63,7 +63,7 @@ const NotionSearch: React.FC<{
         },
         body: JSON.stringify({
           query: searchQuery,
-          ancestorId: config.rootNotionPageId,
+          ancestorId: config.api.notionPageId || config.rootNotionPageId,
           useOfficialApi
         }),
       });
