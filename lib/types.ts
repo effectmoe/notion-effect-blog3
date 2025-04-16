@@ -93,6 +93,13 @@ export interface SearchParams {
   limit?: number
   userLocale?: string
   useOfficialApi?: boolean
+  // Notion APIの最新仕様に対応するプロパティを追加
+  filter?: {
+    property: string
+    value: string
+  }
+  archived?: boolean
+  filter_properties?: string[]
 }
 
 export interface SearchResult {

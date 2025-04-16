@@ -81,13 +81,18 @@ export async function search(params: types.SearchParams): Promise<types.SearchRe
   // ancestorIdを強制的にrootNotionPageIdに設定
   params.ancestorId = rootNotionPageId;
   
-  // 基本的なフィルタを設定
-  params.filters = {
-    isDeletedOnly: false,
-    excludeTemplates: true,
-    isNavigableOnly: true,
-    requireEditPermissions: false,
+  // 基本的なフィルタを設定 - Notion APIの最新仕様に対応
+  // 検索フィルターをAPIの新しい形式に合わせる
+  params.filter = {
+    property: 'object',
+    value: 'page'
   };
+  
+  // 削除されたページを除外
+  params.archived = false;
+  
+  // 検索結果に含めるプロパティを指定
+  params.filter_properties = ['title', 'properties', 'url'];
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
@@ -102,7 +107,16 @@ export async function search(params: types.SearchParams): Promise<types.SearchRe
   try {
     // 検索実行
     console.log('Starting Notion search with params:', JSON.stringify(params, null, 2));
-    const results = await notion.search(params as NotionSearchParams) as unknown as types.SearchResults;
+    // 必要なパラメータをNotionSearchParamsの形式に合わせて変換
+    const notionParams = {
+      query: params.query,
+      ancestorId: params.ancestorId,
+      limit: params.limit,
+      filter: params.filter,
+      archived: params.archived,
+      filter_properties: params.filter_properties
+    };
+    const results = await notion.search(notionParams as NotionSearchParams) as unknown as types.SearchResults;
     console.log(`Notion search complete. Found ${results.results?.length || 0} results for query: ${params.query}`);
     
     // 検索結果のURLを修正（/p/id形式から/id形式に変更）
