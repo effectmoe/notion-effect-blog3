@@ -126,11 +126,18 @@ const NotionSearchFixed: React.FC<{
     return () => clearTimeout(timeoutId);
   }, [searchQuery, performSearch]);
 
-  // コンポーネントがマウントされたらフォーカス
+  // コンポーネントのマウント/アンマウントをログに記録
   useEffect(() => {
+    console.log('NotionSearchFixed コンポーネントがマウントされました');
+    
+    // 検索入力フィールドにフォーカス
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
+    
+    return () => {
+      console.log('NotionSearchFixed コンポーネントがアンマウントされました');
+    };
   }, []);
 
   // 結果アイテムクリック時の処理
