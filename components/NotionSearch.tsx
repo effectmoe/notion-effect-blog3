@@ -63,7 +63,7 @@ const NotionSearch: React.FC<{
         },
         body: JSON.stringify({
           query: searchQuery,
-          ancestorId: config.api.notionPageId || config.rootNotionPageId,
+          ancestorId: config.rootNotionPageId,
           useOfficialApi
         }),
       });
