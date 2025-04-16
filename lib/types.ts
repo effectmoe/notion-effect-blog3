@@ -1,7 +1,8 @@
 import { type ParsedUrlQuery } from 'node:querystring'
 
-import { type ExtendedRecordMap, type PageMap } from 'notion-types'
+import { type ExtendedRecordMap, type PageMap, SearchParams as NotionSearchParams, SearchResults as NotionSearchResults } from 'notion-types'
 
+// 競合を避けるため、SearchResult と SearchResults を除外して他の型をインポート
 export * from 'notion-types'
 
 export type NavigationStyle = 'default' | 'custom'
@@ -112,9 +113,9 @@ export interface SearchResult {
     title?: string
   }
   
-  // notion-types の SearchResult に必要なプロパティ
-  isNavigable: boolean // オプショナルから必須に変更
-  score: number // オプショナルから必須に変更
+  // 最低限必要なプロパティを定義
+  isNavigable: boolean 
+  score: number
   highlight: {
     pathText: string
     text: string
