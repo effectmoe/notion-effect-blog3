@@ -19,6 +19,7 @@ const SearchTriggerFixed: React.FC = () => {
     }
   }, []);
 
+  // キーボードイベントリスナー
   useEffect(() => {
     // キーボードイベントリスナーを追加
     document.addEventListener('keydown', handleKeyDown);
@@ -29,12 +30,17 @@ const SearchTriggerFixed: React.FC = () => {
     };
   }, [handleKeyDown]);
 
+  // 検索状態の変化を監視
+  useEffect(() => {
+    // isSearchOpen が変化したらログを出力
+    console.log(`検索状態が変化しました: ${isSearchOpen ? 'オープン' : 'クローズ'}`);
+  }, [isSearchOpen]);
+
   // 検索を開く関数
   const openSearch = useCallback(() => {
     console.log('検索ダイアログを開きます - SearchTriggerFixed');
+    document.body.style.overflow = 'hidden'; // スクロールを禁止
     setIsSearchOpen(true);
-    // 検索が開いている間はボディのスクロールを禁止
-    document.body.style.overflow = 'hidden';
   }, []);
 
   // 検索を閉じる関数
@@ -49,7 +55,10 @@ const SearchTriggerFixed: React.FC = () => {
     <>
       <button
         className={styles.searchTrigger}
-        onClick={openSearch}
+        onClick={() => {
+          console.log('検索ボタンがクリックされました');
+          openSearch();
+        }}
         aria-label="検索を開く"
       >
         <FiSearch size={20} />
@@ -57,7 +66,8 @@ const SearchTriggerFixed: React.FC = () => {
         <span className={styles.searchShortcut}>⌘K</span>
       </button>
 
-      {isSearchOpen && <NotionSearchFixed onClose={closeSearch} />}
+      {/* 検索モーダル */}
+      {isSearchOpen ? <NotionSearchFixed onClose={closeSearch} /> : null}
     </>
   );
 };
