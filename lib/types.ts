@@ -1,8 +1,7 @@
 import { type ParsedUrlQuery } from 'node:querystring'
 
-import { type ExtendedRecordMap, type PageMap, SearchParams as NotionSearchParams, SearchResults as NotionSearchResults } from 'notion-types'
+import { type ExtendedRecordMap, type PageMap } from 'notion-types'
 
-// 競合を避けるため、SearchResult と SearchResults を除外して他の型をインポート
 export * from 'notion-types'
 
 export type NavigationStyle = 'default' | 'custom'
@@ -85,55 +84,4 @@ export interface NotionPageInfo {
   author: string
   authorImage: string
   detail: string
-}
-
-export interface SearchParams {
-  query: string
-  ancestorId: string
-  limit?: number
-  userLocale?: string
-  useOfficialApi?: boolean
-  // Notion APIの最新仕様に対応するプロパティを追加
-  filter?: {
-    property: string
-    value: string
-  }
-  archived?: boolean
-  filter_properties?: string[]
-}
-
-export interface SearchResult {
-  id: string
-  title: string
-  url: string
-  preview?: {
-    text?: string
-    imageUrl?: string
-  }
-  cover?: string
-  date?: string
-  object?: string
-  type?: string
-  properties?: Record<string, any>
-  parent?: {
-    id?: string
-    title?: string
-  }
-  
-  // 最低限必要なプロパティを定義
-  isNavigable: boolean 
-  score: number
-  highlight: {
-    pathText: string
-    text: string
-  }
-}
-
-export interface SearchResults {
-  results: SearchResult[]
-  total: number
-  recordMap: {
-    block: Record<string, any>
-    [key: string]: Record<string, any>
-  }
 }

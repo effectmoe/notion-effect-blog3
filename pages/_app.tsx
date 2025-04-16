@@ -10,8 +10,6 @@ import 'styles/global.css'
 // import 'prismjs/themes/prism-okaidia.css'
 // global style overrides for notion
 import 'styles/notion.css'
-// レスポンシブデザイン対応
-import 'styles/responsive.css'
 // global style overrides for prism theme (optional)
 import 'styles/prism-theme.css'
 

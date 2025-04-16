@@ -13,8 +13,6 @@ import * as config from '@/lib/config'
 import { useDarkMode } from '@/lib/use-dark-mode'
 import styles from './Header.module.css'
 import { notionViews } from '@/lib/notion-views'
-// 修正した検索トリガーコンポーネントをインポート
-import SearchTriggerFixed from './SearchTriggerFixed'
 
 // ナビゲーションリンクの型定義
 type MenuItem = {
@@ -41,6 +39,7 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   const { isDarkMode, toggleDarkMode } = useDarkMode()
   const [hasMounted, setHasMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isSearchVisible, setIsSearchVisible] = useState(false)
 
   // マウント状態の確認
   useEffect(() => {
@@ -89,6 +88,19 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
   // メニューの開閉を切り替える
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
+    // メニューを開くときは検索を閉じる
+    if (!menuOpen) {
+      setIsSearchVisible(false)
+    }
+  }
+
+  // 検索の表示/非表示を切り替える
+  const toggleSearch = () => {
+    setIsSearchVisible(!isSearchVisible)
+    // 検索を開くときはメニューを閉じる
+    if (!isSearchVisible) {
+      setMenuOpen(false)
+    }
   }
 
   // メニュー項目をクリックした時の処理
@@ -118,17 +130,21 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
           <Logo />
         </div>
 
-        {/* デスクトップ用ナビゲーション */}
+        {/* デスクトップ用ナビゲーション - メニュー項目はハンバーガーメニューにのみ表示 */}
         <div className={styles.desktopNav}>
           {/* ここは空にして、メニュー項目はハンバーガーメニューにのみ表示する */}
         </div>
 
         {/* ヘッダー右側の要素 */}
         <div className={styles.headerRight}>
-          {/* 修正した検索トリガー */}
-          <div className={styles.searchTriggerContainer}>
-            <SearchTriggerFixed />
-          </div>
+          {/* 検索ボタン */}
+          <button 
+            className={styles.iconButton} 
+            onClick={toggleSearch}
+            aria-label={isSearchVisible ? '検索を閉じる' : '検索を開く'}
+          >
+            <IoSearchOutline size={22} />
+          </button>
 
           {/* ダークモード切り替えボタン */}
           {hasMounted && (
@@ -179,6 +195,21 @@ export function HeaderImpl({ menuItems = DEFAULT_MENU_ITEMS }: HeaderProps) {
               <span></span>
             </div>
           </button>
+        </div>
+      </div>
+
+      {/* 検索オーバーレイ */}
+      <div className={cs(
+        styles.searchOverlay,
+        isSearchVisible ? styles.searchVisible : styles.searchHidden
+      )}>
+        <div className={styles.searchContainer}>
+          <input 
+            type="text" 
+            className={styles.searchInput} 
+            placeholder="検索..."
+            aria-label="検索"
+          />
         </div>
       </div>
 

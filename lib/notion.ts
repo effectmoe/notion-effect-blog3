@@ -1,11 +1,8 @@
 import {
   type ExtendedRecordMap,
-  type SearchParams as NotionSearchParams,
-  type SearchResults as NotionSearchResults,
-  type SearchResult as NotionSearchResult
+  type SearchParams,
+  type SearchResults
 } from 'notion-types'
-import * as types from './types'
-import { SearchResult, SearchResults } from './types'
 import { mergeRecordMaps } from 'notion-utils'
 import pMap from 'p-map'
 import pMemoize from 'p-memoize'
@@ -13,8 +10,7 @@ import pMemoize from 'p-memoize'
 import {
   isPreviewImageSupportEnabled,
   navigationLinks,
-  navigationStyle,
-  rootNotionPageId
+  navigationStyle
 } from './config'
 import { getTweetsMap } from './get-tweets'
 import { notion } from './notion-api'
@@ -74,240 +70,45 @@ export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
   return recordMap
 }
 
-export async function search(params: types.SearchParams): Promise<types.SearchResults> {
-  // パラメータをログに出力
-  console.log('Search function params (original):', JSON.stringify(params, null, 2));
+export async function search(params: SearchParams): Promise<SearchResults> {
+  // rootNotionPageIdがなければ追加
+  if (!params.ancestorId) {
+    params.ancestorId = process.env.NOTION_PAGE_ID
+  }
   
-  // ancestorIdを強制的にrootNotionPageIdに設定
-  params.ancestorId = rootNotionPageId;
+  // 検索フィルタの最適化
+  // 型エラーを回避するために型アサーションを使用
+  params.filters = {
+    ...(params.filters || {}),
+    isDeletedOnly: false,
+    excludeTemplates: true,
+    isNavigableOnly: false,    // falseに変更して検索範囲を広げる
+    requireEditPermissions: false,
+  } as any;  // 型アサーションを使用
   
-  // 基本的なフィルタを設定 - Notion APIの最新仕様に対応
-  // 検索フィルターをAPIの新しい形式に合わせる
-  params.filter = {
-    property: 'object',
-    value: 'page'
-  };
-  
-  // 削除されたページを除外
-  params.archived = false;
-  
-  // 検索結果に含めるプロパティを指定
-  params.filter_properties = ['title', 'properties', 'url'];
+  // 必要なカスタムプロパティを追加
+  (params.filters as any).includePublicPagesWithoutExplicitAccess = true;
+  (params.filters as any).ancestorIds = [process.env.NOTION_PAGE_ID];
   
   // クエリがない場合や短すぎる場合は空の結果を返す
   if (!params.query || params.query.trim().length < 2) {
-    return { results: [], total: 0, recordMap: { block: {} } } as types.SearchResults
+    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults
   }
+
+  // 検索クエリの前処理（必要に応じてコメントアウト解除）
+  // params.query = params.query.trim();
   
-  // 検索結果の最大数を設定
-  params.limit = params.limit || 20;
+  // 検索結果の最大数を指定
+  params.limit = params.limit || 50;  // デフォルトより多くの結果を取得
   
-  console.log('Search params (final):', JSON.stringify(params, null, 2));
+  console.log('Search params:', JSON.stringify(params, null, 2));
   
   try {
-    // 検索実行
-    console.log('Starting Notion search with params:', JSON.stringify(params, null, 2));
-    // 必要なパラメータをNotionSearchParamsの形式に合わせて変換
-    const notionParams = {
-      query: params.query,
-      ancestorId: params.ancestorId,
-      limit: params.limit,
-      filter: params.filter,
-      archived: params.archived,
-      filter_properties: params.filter_properties
-    };
-    const results = await notion.search(notionParams as NotionSearchParams) as unknown as types.SearchResults;
-    console.log(`Notion search complete. Found ${results.results?.length || 0} results for query: ${params.query}`);
-    
-    // 検索結果のURLを修正（/p/id形式から/id形式に変更）
-    if (results && results.results) {
-      results.results = results.results.map(result => {
-        // 型アサーションを追加して any 型に一時的に変換
-        const searchResult = result as any;
-        
-        // URLを生成する際に /p/pageId から /pageId に変更
-        if (searchResult.url && typeof searchResult.url === 'string' && searchResult.url.startsWith('/p/')) {
-          searchResult.url = searchResult.url.replace('/p/', '/');
-        }
-        
-        // ハイライトのpathTextも修正
-        if (searchResult.highlight && searchResult.highlight.pathText && 
-            typeof searchResult.highlight.pathText === 'string' &&
-            searchResult.highlight.pathText.startsWith('/p/')) {
-          searchResult.highlight.pathText = searchResult.highlight.pathText.replace('/p/', '/');
-        }
-        
-        return searchResult;
-      });
-    }
-    
-    // 検索結果の詳細をログに出力
-    if (results.results?.length > 0) {
-      console.log('Search results sample:', JSON.stringify(results.results[0], null, 2));
-    } else {
-      console.log('No results found, full response:', JSON.stringify(results, null, 2));
-    }
-    
+    const results = await notion.search(params);
+    console.log(`Found ${results.results?.length || 0} results for query: ${params.query}`);
     return results;
   } catch (err) {
     console.error('Search error:', err);
-    return { results: [], total: 0, recordMap: { block: {} } } as SearchResults;
-  }
-}
-
-// 代替検索実装 - 基本的なNotionページ取得で手動フィルタリング
-export async function searchManually(query: string): Promise<SearchResults> {
-  try {
-    // rootNotionPageIdからページを取得
-    console.log(`Manually searching for "${query}" by getting root page ${rootNotionPageId}`);
-    const recordMap = await notion.getPage(rootNotionPageId, {
-      fetchCollections: true, // コレクションも取得
-      signFileUrls: true,
-    });
-    
-    // 検索クエリを小文字に変換
-    const searchLowerCase = query.toLowerCase();
-    
-    // 検索結果を格納する配列
-    const results: any[] = [];
-    
-    // ブロックとコレクションを取得してテキストを検索
-    if (recordMap.block) {
-      // ページタイトルのマッピングを保存するオブジェクト
-      const pageTitles: {[key: string]: string} = {};
-      
-      // まず、ブロックからページのタイトルを抽出
-      Object.entries(recordMap.block).forEach(([id, blockData]) => {
-        const block = blockData.value;
-        if (!block) return;
-        
-        // ページタイプのブロックを見つける
-        if (block.type === 'page' && block.properties && block.properties.title) {
-          const title = block.properties.title;
-          let pageTitle = '';
-          
-          if (Array.isArray(title)) {
-            // Notionのテキスト配列からテキストを抽出
-            title.forEach(textChunk => {
-              if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
-                pageTitle += textChunk[0];
-              }
-            });
-          }
-          
-          if (pageTitle) {
-            pageTitles[id] = pageTitle;
-          }
-        }
-      });
-      
-      console.log(`Found ${Object.keys(pageTitles).length} page titles`);
-      
-      // 次に、すべてのブロックをスキャンして検索
-      Object.entries(recordMap.block).forEach(([id, blockData]) => {
-        const block = blockData.value;
-        if (!block) return;
-        
-        // ブロックのテキストコンテンツを抽出
-        let blockText = '';
-        let blockTitle = '';
-        
-        if (block.properties && block.properties.title) {
-          const title = block.properties.title;
-          
-          if (Array.isArray(title)) {
-            // Notionのテキスト配列からテキストを抽出
-            title.forEach(textChunk => {
-              if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
-                blockText += textChunk[0];
-              }
-            });
-          }
-        }
-        
-        // ページのタイトルがあればそれを使用
-        if (block.type === 'page' && pageTitles[id]) {
-          blockTitle = pageTitles[id];
-        } else {
-          // ページでない場合は、テキストの最初の部分をタイトルとして使用
-          blockTitle = blockText.substring(0, 80) + (blockText.length > 80 ? '...' : '');
-        }
-        
-        // テキスト内に検索クエリが含まれるか確認
-        if (blockText.toLowerCase().includes(searchLowerCase)) {
-          // 親ページIDを取得（可能な場合）
-          const parentId = block.parent_id || block.parent_table === 'collection' ? block.parent_id : null;
-          const parentTitle = parentId && pageTitles[parentId] ? pageTitles[parentId] : '';
-          
-          // 検索結果に追加（親ページのタイトルも含める）
-          results.push({
-            id,
-            title: blockTitle || '無題',
-            url: `/${id}`,  // /p/プレフィックスを削除
-            preview: {
-              text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
-            },
-            parent: parentId ? {
-              title: parentTitle || 'Parent Page',
-              id: parentId
-            } : null,
-            isNavigable: true,
-            score: 1.0,
-            object: block.type === 'page' ? 'page' : 'block',
-            highlight: {
-              pathText: parentTitle ? `${parentTitle} > ${blockTitle}` : blockTitle,
-              text: blockText.substring(0, 200) + (blockText.length > 200 ? '...' : '')
-            }
-          });
-        }
-      });
-    }
-    
-    // コレクションも検索
-    if (recordMap.collection) {
-      Object.entries(recordMap.collection).forEach(([collectionId, collectionData]) => {
-        const collection = collectionData.value;
-        if (!collection) return;
-        
-        // コレクション名を検索
-        let collectionName = '';
-        if (collection.name && Array.isArray(collection.name)) {
-          collection.name.forEach(textChunk => {
-            if (Array.isArray(textChunk) && textChunk.length > 0 && typeof textChunk[0] === 'string') {
-              collectionName += textChunk[0];
-            }
-          });
-        }
-        
-        if (collectionName.toLowerCase().includes(searchLowerCase)) {
-          results.push({
-            id: collectionId,
-            title: collectionName,
-            url: `/${collectionId}`,  // /p/プレフィックスを削除
-            preview: {
-              text: `データベース: ${collectionName}`
-            },
-            isNavigable: true,
-            score: 1.0,
-            object: 'collection',
-            highlight: {
-              pathText: `データベース: ${collectionName}`,
-              text: `データベース: ${collectionName}`
-            }
-          });
-        }
-      });
-    }
-    
-    console.log(`Manual search found ${results.length} results for "${query}"`);
-    
-    return {
-      results,
-      total: results.length,
-      recordMap: { block: {} }
-    };
-  } catch (err) {
-    console.error('Manual search error:', err);
     return { results: [], total: 0, recordMap: { block: {} } } as SearchResults;
   }
 }

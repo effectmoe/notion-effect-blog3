@@ -150,7 +150,6 @@ export const api = {
   searchNotion: `${apiBaseUrl}/search-notion`,
   getNotionPageInfo: `${apiBaseUrl}/notion-page-info`,
   getSocialImage: `${apiBaseUrl}/social-image`,
-  mcpSearchFix: `${apiBaseUrl}/mcp-search-fix`, // MCP検索修正用のエンドポイントを追加
   notionPageId: process.env.NOTION_PAGE_ID  // NOTION_PAGE_IDを追加
 }
 

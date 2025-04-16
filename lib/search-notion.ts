@@ -23,11 +23,7 @@ async function searchNotionImpl(
   // 複数のポイントでエラーの可能性を回避するために型アサーションを使用
   const searchParams = params as any;
   
-  // 修正したAPIエンドポイントを使用
-  const endpoint = api.mcpSearchFix || api.searchNotion;
-  console.log('使用するAPIエンドポイント:', endpoint);
-  
-  return fetch(endpoint, {
+  return fetch(api.searchNotion, {
     method: 'POST',
     body: JSON.stringify(searchParams),
     headers: {
@@ -49,46 +45,10 @@ async function searchNotionImpl(
     .then((results) => {
       // 結果のロギング
       console.log(`Client received ${results.results?.length || 0} results for query: ${params.query}`)
-      
-      // 検索結果のURLを修正（/p/id形式から/id形式に変更）
-      if (results && results.results) {
-        results.results = results.results.map(result => {
-          const typedResult = result as any; // 型アサーションを使用
-          if (typedResult.url && typeof typedResult.url === 'string' && typedResult.url.startsWith('/p/')) {
-            typedResult.url = typedResult.url.replace('/p/', '/');
-          }
-          if (typedResult.highlight && typedResult.highlight.pathText && 
-              typeof typedResult.highlight.pathText === 'string' && 
-              typedResult.highlight.pathText.startsWith('/p/')) {
-            typedResult.highlight.pathText = typedResult.highlight.pathText.replace('/p/', '/');
-          }
-          return typedResult;
-        });
-      }
-      
       return results
     })
     .catch((err) => {
       console.error('Search request failed:', err)
-      return { 
-        results: [{
-          id: '',
-          title: 'No results',
-          url: '',
-          preview: {
-            text: 'Search failed. Please try again.'
-          },
-          isNavigable: false,
-          score: 0,
-          highlight: {
-            pathText: '',
-            text: 'Search failed. Please try again.'
-          }
-        }], 
-        total: 0, 
-        recordMap: { 
-          block: {}
-        } 
-      } as types.SearchResults
+      return { results: [], total: 0, recordMap: { block: {} } } as types.SearchResults
     })
 }
